@@ -4,7 +4,7 @@
   <img src="https://img.shields.io/badge/platform-windows%20%7C%20linux%20%7C%20macos-blue" />
   <img src="https://img.shields.io/badge/java-%3E%3D13.0.0-blue" />
   <img src="https://img.shields.io/badge/gradle-6.1.1-blue" />
-  <a href="https://gitpod.io/#https://github.com/Fizoratti/jav_PUCRS-SisOp-Virtual-Machine">
+  <a href="https://gitpod.io/#https://github.com/Csvop/TrabalhoSO/">
     <img src="https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod" />
   </a>
   <p></p>
@@ -43,10 +43,10 @@ Usando a IDE de browser [GitPod](https://gitpod.io/) não é preciso instalar na
 
 ```bash
 # Clone este repositório
-$ git clone https://github.com/Fizoratti/jav_PUCRS-SisOp-Virtual-Machine/
+$ git clone https://github.com/Csvop/TrabalhoSO/
 
 # Acesse a pasta do projeto no terminal/cmd
-$ cd jav_PUCRS-SisOp-Virtual-Machine
+$ cd TrabalhoSO/
 
 # Execute a aplicação
 $ gradle run
@@ -66,8 +66,8 @@ Conjunto de instruções.
 
 #### Instruções JUMP
 
-- [ ] JMP
-- [ ] JMPI
+- [x] JMP
+- [x] JMPI
 - [x] JMPIG
 - [ ] JMPIL
 - [ ] JMPIE
@@ -82,14 +82,14 @@ Conjunto de instruções.
 - [x] ADDI
 - [x] SUB
 - [ ] SUBI
-- [ ] MULT
+- [x] MULT
 
 #### Instruções de Movimentação
 
 - [x] LDI
 - [x] STD
 - [x] STX
-- [ ] LDD
+- [x] LDD
 - [ ] LDX
 - [ ] SWAP
 
