@@ -5,10 +5,7 @@
 // Fase 1 - máquina virtual (vide enunciado correspondente)
 //
 
-package virtualmachine;
-
 import java.util.*;
-
 public class Sistema {
 	
 	// -------------------------------------------------------------------------------------------------------
@@ -46,7 +43,9 @@ public class Sistema {
 		private int[] reg;       	// registradores da CPU
 
 		private Word[] m;   // CPU acessa MEMORIA, guarda referencia 'm' a ela. memoria nao muda. ee sempre a mesma.
-						
+			
+		private Aux aux = new Aux();
+
 		public CPU(Word[] _m) {     // ref a MEMORIA e interrupt handler passada na criacao da CPU
 			m = _m; 				// usa o atributo 'm' para acessar a memoria.
 			reg = new int[8]; 		// aloca o espaço dos registradores
@@ -56,26 +55,51 @@ public class Sistema {
 			pc = _pc;                                              // limite e pc (deve ser zero nesta versao)
 		}
 	
+        public void showState(){
+			 System.out.println("       "+ pc); 
+			   System.out.print("           ");
+			 for (int i=0; i<8; i++) { System.out.print("r"+i);   System.out.print(": "+reg[i]+"     "); };  
+			 System.out.println("");
+			 System.out.print("           ");  aux.dump(ir);
+		}
+
 		public void run() { 		// execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente setado
 			while (true) { 			// ciclo de instrucoes. acaba cfe instrucao, veja cada caso.
 				// FETCH
 					ir = m[pc]; 	// busca posicao da memoria apontada por pc, guarda em ir
+					//if debug
+					    showState();
 				// EXECUTA INSTRUCAO NO ir
 					switch (ir.opc) { // para cada opcode, sua execução
+
+						/**/
 
 						case LDI: // Rd ← k
 							reg[ir.r1] = ir.p;
 							pc++;
 							break;
+						
+						case LDD: // Rd ← [A]
+							reg[ir.r1] = m[ir.p].p; // m == memoria
+							pc++;
+							break;
 
 						case STD: // [A] ← Rs
-							    m[ir.p].opc = Opcode.DATA;
-							    m[ir.p].p = reg[ir.r1];
-							    pc++;
-						break;
+							m[ir.p].opc = Opcode.DATA;
+							m[ir.p].p = reg[ir.r1];
+							pc++;
+							break;
 
 						case ADD: // Rd ← Rd + Rs
 							reg[ir.r1] = reg[ir.r1] + reg[ir.r2];
+							pc++;
+							break;
+
+						case LDX: // Rd ← [Rs]
+							
+
+						case MULT: // Rd ← Rd * Rs
+							reg[ir.r1] = reg[ir.r1] * reg[ir.r2];
 							pc++;
 							break;
 
@@ -95,8 +119,20 @@ public class Sistema {
 							pc++;
 							break;
 
+						case JMP: //  PC ← k
+								pc = ir.p;
+						     break;
+						
 						case JMPIG: // If Rc > 0 Then PC ← Rs Else PC ← PC +1
 							if (reg[ir.r2] > 0) {
+								pc = reg[ir.r1];
+							} else {
+								pc++;
+							}
+							break;
+
+						case JMPIE: // If Rc = 0 Then PC ← Rs Else PC ← PC +1
+							if (reg[ir.r2] == 0) {
 								pc = reg[ir.r1];
 							} else {
 								pc++;
@@ -129,7 +165,9 @@ public class Sistema {
 	     // memória
   		 	 tamMem = 1024;
 			 m = new Word[tamMem]; // m ee a memoria
-			 for (int i=0; i<tamMem; i++) { m[i] = new Word(Opcode.___,-1,-1,-1); };
+			 for (int i=0; i<tamMem; i++) { 
+				 m[i] = new Word(Opcode.___,-1,-1,-1);
+			 };
 	  	 // cpu
 			 cpu = new CPU(m);
 	    }	
@@ -164,8 +202,9 @@ public class Sistema {
     // ------------------- instancia e testa sistema
 	public static void main(String args[]) {
 		Sistema s = new Sistema();
-		s.test2();
 		s.test1();
+		//s.test4();
+		//s.test3();
 	}
     // -------------------------------------------------------------------------------------------------------
     // --------------- TUDO ABAIXO DE MAIN É AUXILIAR PARA FUNCIONAMENTO DO SISTEMA - nao faz parte 
@@ -178,8 +217,8 @@ public class Sistema {
 		vm.cpu.setContext(0);
 		System.out.println("---------------------------------- programa carregado ");
 		aux.dump(vm.m, 0, 33);
-		System.out.println("---------------------------------- após execucao ");
 		vm.cpu.run();
+		System.out.println("---------------------------------- após execucao ");
 		aux.dump(vm.m, 0, 33);
 	}
 
@@ -195,6 +234,29 @@ public class Sistema {
 		aux.dump(vm.m, 0, 15);
 	}
 
+	public void test3(){
+		Aux aux = new Aux();
+		Word[] p = new Programas().fatorial;
+		aux.carga(p, vm.m);
+		vm.cpu.setContext(0);
+		System.out.println("---------------------------------- programa carregado ");
+		aux.dump(vm.m, 0, 15);
+		vm.cpu.run();
+		System.out.println("---------------------------------- após execucao ");
+		aux.dump(vm.m, 0, 15);
+	}
+
+	public void test4(){
+		Aux aux = new Aux();
+		Word[] p = new Programas().somaSimples50mais2;
+		aux.carga(p, vm.m);
+		vm.cpu.setContext(0);
+		System.out.println("---------------------------------- programa carregado ");
+		aux.dump(vm.m, 0, 15);
+		vm.cpu.run();
+		System.out.println("---------------------------------- após execucao ");
+		aux.dump(vm.m, 0, 15);
+	}
 	// -------------------------------------------  classes e funcoes auxiliares
     public class Aux {
 		public void dump(Word w) {
@@ -220,6 +282,8 @@ public class Sistema {
    //  -------------------------------------------- programas aa disposicao para copiar na memoria (vide aux.carga)
    public class Programas {
 	   public Word[] progMinimo = new Word[] {
+		    //       OPCODE      R1  R2  P         :: VEJA AS COLUNAS VERMELHAS DA TABELA DE DEFINICAO DE OPERACOES
+			//                                     :: -1 SIGNIFICA QUE O PARAMETRO NAO EXISTE PARA A OPERACAO DEFINIDA
 		    new Word(Opcode.LDI, 0, -1, 999), 		
 			new Word(Opcode.STD, 0, -1, 10), 
 			new Word(Opcode.STD, 0, -1, 11), 
@@ -229,13 +293,16 @@ public class Sistema {
 			new Word(Opcode.STOP, -1, -1, -1) };
 
 	   public Word[] fibonacci10 = new Word[] { // mesmo que prog exemplo, so que usa r0 no lugar de r8
+			
+			new Word(Opcode.LDI, 4, -1, 10), //Numero de numeros na sequencia !!é um INDEX!!
 			new Word(Opcode.LDI, 1, -1, 0), 
-			new Word(Opcode.STD, 1, -1, 20), //50 
+			new Word(Opcode.STD, 1, -1, 20),    // 20 posicao de memoria onde inicia a serie de fibonacci gerada  
 			new Word(Opcode.LDI, 2, -1, 1),
-			new Word(Opcode.STD, 2, -1, 21), //51
-			new Word(Opcode.LDI, 0, -1, 22), //52
+			new Word(Opcode.STD, 2, -1, 21),      
+			new Word(Opcode.LDI, 0, -1, 22),       
 			new Word(Opcode.LDI, 6, -1, 6),
-			new Word(Opcode.LDI, 7, -1, 31), //61
+			new Word(Opcode.LDI, 7, -1, 20), // final da escala
+			new Word(Opcode.ADD, 7, 4, -1),
 			new Word(Opcode.LDI, 3, -1, 0), 
 			new Word(Opcode.ADD, 3, 1, -1),
 			new Word(Opcode.LDI, 1, -1, 0), 
@@ -245,8 +312,48 @@ public class Sistema {
 			new Word(Opcode.ADDI, 0, -1, 1), 
 			new Word(Opcode.SUB, 7, 0, -1),
 			new Word(Opcode.JMPIG, 6, 7, -1), 
-			new Word(Opcode.STOP, -1, -1, -1) };
-   }
+			new Word(Opcode.STOP, -1, -1, -1),   // POS 16
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),   // POS 20
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1)  // ate aqui - serie de fibonacci ficara armazenada
+			   };   
 
+	   public Word[] fatorial = new Word[] { 	 // este fatorial so aceita valores positivos.   nao pode ser zero
+												 // linha   coment
+			new Word(Opcode.LDI, 0, -1, 6),      // 0   	r0 é valor a calcular fatorial
+			new Word(Opcode.LDI, 1, -1, 1),      // 1   	r1 é 1 para multiplicar (por r0)
+			new Word(Opcode.LDI, 6, -1, 1),      // 2   	r6 é 1 para ser o decremento
+			new Word(Opcode.LDI, 7, -1, 8),      // 3   	r7 tem posicao de stop do programa = 8
+			new Word(Opcode.JMPIE, 7, 0, 0),     // 4   	se r0=0 pula para r7(=8)
+			new Word(Opcode.MULT, 1, 0, -1),     // 5   	r1 = r1 * r0
+			new Word(Opcode.SUB, 0, 6, -1),      // 6   	decrementa r0 1 
+			new Word(Opcode.JMP, -1, -1, 4),     // 7   	vai p posicao 4
+			new Word(Opcode.STD, 1, -1, 10),     // 8   	coloca valor de r1 na posição 10
+			new Word(Opcode.STOP, -1, -1, -1),    // 9   	stop
+			new Word(Opcode.DATA, -1, -1, -1) };  // 10   ao final o valor do fatorial estará na posição 10 da memória        
+			
+		public Word[] somaSimples50mais2 = new Word[] {
+			new Word(Opcode.LDI, 1, -1, 50),
+			new Word(Opcode.STD, 1, -1, 13),
+			new Word(Opcode.LDI, 2, -1, 2),
+			new Word(Opcode.ADD, 1, 2, -1),
+			new Word(Opcode.STD, 1, -1, 10),
+			new Word(Opcode.STD, 2, -1, 11),
+			new Word(Opcode.STOP, -1, -1, -1)
+		};
+
+		public Word[] fibonacciPA = new Word[] {
+			new Word(Opcode.LDI, 0, -1, -1),
+		};
+    }
 }
-
