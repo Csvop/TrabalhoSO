@@ -75,11 +75,23 @@ public class Sistema {
 
 						//Instruções JUMP
 						case JMP: //  PC ← k
-								pc = ir.p;
-						     break;
-						
+							pc = ir.p;
+						    break;
+
+						case JMPI: // PC ← Rs 
+							pc = ir.r1;
+							break;
+
 						case JMPIG: // If Rc > 0 Then PC ← Rs Else PC ← PC +1
 							if (reg[ir.r2] > 0) {
+								pc = reg[ir.r1];
+							} else {
+								pc++;
+							}
+							break;
+
+						case JMPIL: // If Rc < 0 Then PC ← Rs Else PC ← PC +1
+							if (reg[ir.r2] < 0) {
 								pc = reg[ir.r1];
 							} else {
 								pc++;
@@ -89,6 +101,34 @@ public class Sistema {
 						case JMPIE: // If Rc = 0 Then PC ← Rs Else PC ← PC +1
 							if (reg[ir.r2] == 0) {
 								pc = reg[ir.r1];
+							} else {
+								pc++;
+							}
+							break;
+						
+						case JMPIM: // PC ← [A]
+							pc = ir.p;
+							break;
+						
+						case JMPIGM: // If Rc > 0 Then PC ← [A] Else PC ← PC +1
+							if (reg[ir.r2] > 0) {
+								pc = reg[ir.p];
+							} else {
+								pc++;
+							}
+							break;
+
+						case JMPILM: // If Rc < 0 Then PC ← [A] Else PC ← PC +1
+							if (reg[ir.r2] < 0) {
+								pc = reg[ir.p];
+							} else {
+								pc++;
+							}
+							break;
+
+						case JMPIEM: // If Rc = 0 Then PC ← [A] Else PC ← PC +1
+							if (reg[ir.r2] == 0) {
+								pc = reg[ir.p];
 							} else {
 								pc++;
 							}
@@ -137,9 +177,9 @@ public class Sistema {
 							break;
 
 						case STX: // [Rd] ←Rs
-							    m[reg[ir.r1]].opc = Opcode.DATA;      
-							    m[reg[ir.r1]].p = reg[ir.r2];          
-								pc++;
+							m[reg[ir.r1]].opc = Opcode.DATA;      
+							m[reg[ir.r1]].p = reg[ir.r2];          
+							pc++;
 							break;
 
 						case STOP: // por enquanto, para execucao
