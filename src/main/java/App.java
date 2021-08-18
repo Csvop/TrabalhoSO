@@ -6,7 +6,7 @@ import virtualmachine.Sistema;
 
 public class App {
     public String getGreeting() {
-        return "Hello world.";
+        return "Program Initializing!";
     }
 
     public static void main(String[] args) {

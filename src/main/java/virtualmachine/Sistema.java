@@ -1,3 +1,4 @@
+package virtualmachine;
 // PUCRS - Escola Politécnica - Sistemas Operacionais
 // Prof. Fernando Dotti
 // Código fornecido como parte da solução do projeto de Sistemas Operacionais
@@ -72,53 +73,7 @@ public class Sistema {
 				// EXECUTA INSTRUCAO NO ir
 					switch (ir.opc) { // para cada opcode, sua execução
 
-						/**/
-
-						case LDI: // Rd ← k
-							reg[ir.r1] = ir.p;
-							pc++;
-							break;
-						
-						case LDD: // Rd ← [A]
-							reg[ir.r1] = m[ir.p].p; // m == memoria
-							pc++;
-							break;
-
-						case STD: // [A] ← Rs
-							m[ir.p].opc = Opcode.DATA;
-							m[ir.p].p = reg[ir.r1];
-							pc++;
-							break;
-
-						case ADD: // Rd ← Rd + Rs
-							reg[ir.r1] = reg[ir.r1] + reg[ir.r2];
-							pc++;
-							break;
-
-						case LDX: // Rd ← [Rs]
-							
-
-						case MULT: // Rd ← Rd * Rs
-							reg[ir.r1] = reg[ir.r1] * reg[ir.r2];
-							pc++;
-							break;
-
-						case ADDI: // Rd ← Rd + k
-							reg[ir.r1] = reg[ir.r1] + ir.p;
-							pc++;
-							break;
-
-						case STX: // [Rd] ←Rs
-							    m[reg[ir.r1]].opc = Opcode.DATA;      
-							    m[reg[ir.r1]].p = reg[ir.r2];          
-								pc++;
-							break;
-
-						case SUB: // Rd ← Rd - Rs
-							reg[ir.r1] = reg[ir.r1] - reg[ir.r2];
-							pc++;
-							break;
-
+						//Instruções JUMP
 						case JMP: //  PC ← k
 								pc = ir.p;
 						     break;
@@ -137,6 +92,54 @@ public class Sistema {
 							} else {
 								pc++;
 							}
+							break;
+
+						//Instruções Aritméticas
+						case ADDI: // Rd ← Rd + k
+							reg[ir.r1] = reg[ir.r1] + ir.p;
+							pc++;
+							break;
+
+						case ADD: // Rd ← Rd + Rs
+							reg[ir.r1] = reg[ir.r1] + reg[ir.r2];
+							pc++;
+							break;
+
+						case SUB: // Rd ← Rd - Rs
+							reg[ir.r1] = reg[ir.r1] - reg[ir.r2];
+							pc++;
+							break;
+
+						case MULT: // Rd ← Rd * Rs
+							reg[ir.r1] = reg[ir.r1] * reg[ir.r2];
+							pc++;
+							break;	
+						
+						//Instruções de Movimentação
+						case LDI: // Rd ← k
+							reg[ir.r1] = ir.p;
+							pc++;
+							break;
+						
+						case LDD: // Rd ← [A]
+							reg[ir.r1] = m[ir.p].p; // m == memoria
+							pc++;
+							break;
+
+						case STD: // [A] ← Rs
+							m[ir.p].opc = Opcode.DATA;
+							m[ir.p].p = reg[ir.r1];
+							pc++;
+							break;
+
+						case LDX: // Rd ← [Rs]
+							pc++;
+							break;
+
+						case STX: // [Rd] ←Rs
+							    m[reg[ir.r1]].opc = Opcode.DATA;      
+							    m[reg[ir.r1]].p = reg[ir.r2];          
+								pc++;
 							break;
 
 						case STOP: // por enquanto, para execucao
