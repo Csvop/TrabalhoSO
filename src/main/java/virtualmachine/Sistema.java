@@ -139,6 +139,11 @@ public class Sistema {
 							reg[ir.r1] = reg[ir.r1] + ir.p;
 							pc++;
 							break;
+						
+						case SUBI: // Rd ← Rd – k 
+							reg[ir.r1] = reg[ir.r1] - ir.p;
+							pc++;
+							break;
 
 						case ADD: // Rd ← Rd + Rs
 							reg[ir.r1] = reg[ir.r1] + reg[ir.r2];
