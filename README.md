@@ -69,19 +69,19 @@ Conjunto de instruções.
 - [x] JMP
 - [x] JMPI
 - [x] JMPIG
-- [ ] JMPIL
-- [ ] JMPIE
-- [ ] JMPIM
-- [ ] JMPIGM
-- [ ] JMPILM
-- [ ] JMPIEM
+- [x] JMPIL
+- [x] JMPIE
+- [x] JMPIM
+- [x] JMPIGM
+- [x] JMPILM
+- [x] JMPIEM
 
 #### Instruções Aritméticas
 
 - [x] ADD
 - [x] ADDI
 - [x] SUB
-- [ ] SUBI
+- [x] SUBI
 - [x] MULT
 
 #### Instruções de Movimentação
@@ -90,7 +90,7 @@ Conjunto de instruções.
 - [x] STD
 - [x] STX
 - [x] LDD
-- [ ] LDX
+- [x] LDX
 - [ ] SWAP
 
 #### Instruções Genréricas
