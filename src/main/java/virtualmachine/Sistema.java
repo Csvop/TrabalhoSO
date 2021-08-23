@@ -65,7 +65,11 @@ public class Sistema {
 		}
 
 		public void run() { 		// execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente setado
-			while (true) { 			// ciclo de instrucoes. acaba cfe instrucao, veja cada caso.
+			while (true) { 	
+				boolean flagEndInv = false;
+				boolean flagIntrInv = false;
+				boolean flagOverflow = false;
+				// ciclo de instrucoes. acaba cfe instrucao, veja cada caso.
 				// FETCH
 					ir = m[pc]; 	// busca posicao da memoria apontada por pc, guarda em ir
 					//if debug
@@ -75,7 +79,12 @@ public class Sistema {
 
 						//Instruções JUMP
 						case JMP: //  PC ← k
-							pc = ir.p;
+							if(!(ir.p < -1 || ir.p > 1023))
+							{
+								pc = ir.p;
+							} else {
+								flagOverflow =  true;
+							}
 						    break;
 
 						case JMPI: // PC ← Rs 
@@ -136,8 +145,13 @@ public class Sistema {
 
 						//Instruções Aritméticas
 						case ADDI: // Rd ← Rd + k
-							reg[ir.r1] = reg[ir.r1] + ir.p;
-							pc++;
+							if(ir.r1 < Integer.MIN_VALUE || ir.r1 > Integer.MAX_VALUE || ir.r2 < Integer.MIN_VALUE || ir.r2 > Integer.MAX_VALUE || ir.p < Integer.MIN_VALUE || ir.p > Integer.MAX_VALUE)
+							{
+								flagOverflow = true;
+							} else {
+								reg[ir.r1] = reg[ir.r1] + ir.p;
+								pc++;
+							}
 							break;
 						
 						case SUBI: // Rd ← Rd – k 
@@ -146,8 +160,14 @@ public class Sistema {
 							break;
 
 						case ADD: // Rd ← Rd + Rs
-							reg[ir.r1] = reg[ir.r1] + reg[ir.r2];
-							pc++;
+							int aux = reg[ir.r1] + reg[ir.r2];
+							if(aux < Integer.MIN_VALUE || aux > Integer.MAX_VALUE)
+							{
+								flagOverflow = true;
+							} else {
+								reg[ir.r1] = reg[ir.r1] + reg[ir.r2];
+								pc++;
+							}
 							break;
 
 						case SUB: // Rd ← Rd - Rs
@@ -172,9 +192,13 @@ public class Sistema {
 							break;
 
 						case STD: // [A] ← Rs
-							m[ir.p].opc = Opcode.DATA;
-							m[ir.p].p = reg[ir.r1];
-							pc++;
+							try {
+								m[ir.p].opc = Opcode.DATA;
+								m[ir.p].p = reg[ir.r1];
+								pc++;
+							} catch (Exception e) {
+								//TODO: handle exception
+							}
 							break;
 
 						case LDX: // Rd ← [Rs]
@@ -189,11 +213,37 @@ public class Sistema {
 
 						case STOP: // por enquanto, para execucao
 							break;
+
+						default:
+							// INSTRUCAO INVALIDA
+							flagIntrInv = true;
+							break;
 					}
 				
 				// VERIFICA INTERRUPÇÃO !!! - TERCEIRA FASE DO CICLO DE INSTRUÇÕES
 				if (ir.opc==Opcode.STOP) {   
 					break; // break sai do loop da cpu
+				}
+
+				// ENDERECO INVÁLIDO
+				if(flagEndInv == true) 
+				{
+					System.out.println("INTERRUPÇÃO: Endereço Inválido!");
+					break;
+				}
+
+				// INSTRUCAO INVALIDA
+				if(flagIntrInv == true)
+				{
+					System.out.println("INTERRUPÇÃO: Instrução Inválida!");
+					break;
+				}
+
+				// OVERFLOW
+				if(flagOverflow == true)
+				{
+					System.out.println("INTERRUPÇÃO: Overflow!");
+					break;
 				}
 			}
 		}
@@ -250,8 +300,8 @@ public class Sistema {
     // ------------------- instancia e testa sistema
 	public static void main(String args[]) {
 		Sistema s = new Sistema();
-		s.test1();
-		//s.test4();
+		//s.test1();
+		s.test2();
 		//s.test3();
 	}
     // -------------------------------------------------------------------------------------------------------
@@ -296,7 +346,7 @@ public class Sistema {
 
 	public void test4(){
 		Aux aux = new Aux();
-		Word[] p = new Programas().somaSimples50mais2;
+		Word[] p = new Programas().PA;
 		aux.carga(p, vm.m);
 		vm.cpu.setContext(0);
 		System.out.println("---------------------------------- programa carregado ");
@@ -332,7 +382,9 @@ public class Sistema {
 	   public Word[] progMinimo = new Word[] {
 		    //       OPCODE      R1  R2  P         :: VEJA AS COLUNAS VERMELHAS DA TABELA DE DEFINICAO DE OPERACOES
 			//                                     :: -1 SIGNIFICA QUE O PARAMETRO NAO EXISTE PARA A OPERACAO DEFINIDA
-		    new Word(Opcode.LDI, 0, -1, 999), 		
+		    new Word(Opcode.LDI, 0, -1, 2147483647), 	
+			new Word(Opcode.LDI, 1, -1, 2147483647),
+			new Word(Opcode.ADD, 0, 1, -1), 
 			new Word(Opcode.STD, 0, -1, 10), 
 			new Word(Opcode.STD, 0, -1, 11), 
 			new Word(Opcode.STD, 0, -1, 12), 
@@ -390,18 +442,42 @@ public class Sistema {
 			new Word(Opcode.STOP, -1, -1, -1),    // 9   	stop
 			new Word(Opcode.DATA, -1, -1, -1) };  // 10   ao final o valor do fatorial estará na posição 10 da memória        
 			
-		public Word[] somaSimples50mais2 = new Word[] {
-			new Word(Opcode.LDI, 1, -1, 50),
-			new Word(Opcode.STD, 1, -1, 13),
-			new Word(Opcode.LDI, 2, -1, 2),
-			new Word(Opcode.ADD, 1, 2, -1),
-			new Word(Opcode.STD, 1, -1, 10),
-			new Word(Opcode.STD, 2, -1, 11),
-			new Word(Opcode.STOP, -1, -1, -1)
-		};
+		public Word[] PA = new Word[] { // mesmo que prog exemplo, so que usa r0 no lugar de r8
+			new Word(Opcode.LDI, 4, -1, 10), //Numero de numeros na sequencia !!é um INDEX!!
+			new Word(Opcode.STD, 4, -1, 20),
+			new Word(Opcode.LDI, 1, -1, 0), 
+			new Word(Opcode.STD, 1, -1, 21),    // 20 posicao de memoria onde inicia a serie de fibonacci gerada  
+			new Word(Opcode.LDI, 2, -1, 1),
+			new Word(Opcode.STD, 2, -1, 22),      
+			new Word(Opcode.LDI, 0, -1, 23),       
+			new Word(Opcode.LDI, 6, -1, 7),
+			new Word(Opcode.LDI, 7, -1, 21), // final da escala
+			new Word(Opcode.ADD, 7, 4, -1),
+			new Word(Opcode.LDI, 3, -1, 0), 
+			new Word(Opcode.ADD, 3, 1, -1),
+			new Word(Opcode.LDI, 1, -1, 0), 
+			new Word(Opcode.ADD, 1, 2, -1), 
+			new Word(Opcode.ADD, 2, 3, -1),
+			new Word(Opcode.STX, 0, 2, -1), 
+			new Word(Opcode.ADDI, 0, -1, 1), 
+			new Word(Opcode.SUB, 7, 0, -1),
+			new Word(Opcode.JMPIG, 6, 7, -1), 
+			new Word(Opcode.STOP, -1, -1, -1),   // POS 16
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),   // POS 20
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1),
+			new Word(Opcode.DATA, -1, -1, -1)};  // ate aqui - serie de fibonacci ficara armazenada
 
-		public Word[] fibonacciPA = new Word[] {
-			new Word(Opcode.LDI, 0, -1, -1),
-		};
+		public Word[] PB = new Word[] {};
+		public Word[] PC = new Word[] {};
     }
 }
