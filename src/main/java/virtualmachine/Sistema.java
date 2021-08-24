@@ -6,6 +6,7 @@ package virtualmachine;
 // Fase 1 - máquina virtual (vide enunciado correspondente)
 //
 
+import java.math.BigInteger;
 import java.util.*;
 public class Sistema {
 	
@@ -161,7 +162,7 @@ public class Sistema {
 
 						case ADD: // Rd ← Rd + Rs
 							int aux = reg[ir.r1] + reg[ir.r2];
-							if(aux < Integer.MIN_VALUE || aux > Integer.MAX_VALUE)
+							if(aux == -2)
 							{
 								flagOverflow = true;
 							} else {
@@ -197,7 +198,7 @@ public class Sistema {
 								m[ir.p].p = reg[ir.r1];
 								pc++;
 							} catch (Exception e) {
-								//TODO: handle exception
+								flagEndInv = true;
 							}
 							break;
 
@@ -228,21 +229,27 @@ public class Sistema {
 				// ENDERECO INVÁLIDO
 				if(flagEndInv == true) 
 				{
-					System.out.println("INTERRUPÇÃO: Endereço Inválido!");
+					System.out.println("\n-------------------------------------------------");
+					System.out.println("---------INTERRUPÇÃO: Endereço Inválido!---------");
+					System.out.println("-------------------------------------------------\n");
 					break;
 				}
 
 				// INSTRUCAO INVALIDA
 				if(flagIntrInv == true)
 				{
-					System.out.println("INTERRUPÇÃO: Instrução Inválida!");
+					System.out.println("\n-------------------------------------------------");
+					System.out.println("---------NTERRUPÇÃO: Instrução Inválida!---------");
+					System.out.println("-------------------------------------------------\n");
 					break;
 				}
 
 				// OVERFLOW
 				if(flagOverflow == true)
 				{
-					System.out.println("INTERRUPÇÃO: Overflow!");
+					System.out.println("\n----------------------------------------");
+					System.out.println("---------INTERRUPÇÃO: Overflow!---------");
+					System.out.println("----------------------------------------\n");
 					break;
 				}
 			}
