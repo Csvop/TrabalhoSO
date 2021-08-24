@@ -203,7 +203,7 @@ public class Sistema {
 						
 						//Instruções de Movimentação
 						case LDI: // Rd ← k
-						try {
+							try {
 								reg[ir.r1] = ir.p;
 								pc++;
 							} catch (Exception e) {
@@ -213,7 +213,7 @@ public class Sistema {
 							
 						
 						case LDD: // Rd ← [A]
-						try {
+							try {
 								reg[ir.r1] = m[ir.p].p; // m == memoria
 								pc++;
 							} catch (Exception e) {
@@ -233,8 +233,8 @@ public class Sistema {
 							break;
 
 						case LDX: // Rd ← [Rs]
-						try {
-								reg[ir.r1] = reg[ir.r2].p; // m == memoria
+							try {
+								reg[ir.r1] = m[ir.r2].p; // m == memoria
 								pc++;
 							} catch (Exception e) {
 								flagEndInv = true;
@@ -243,7 +243,7 @@ public class Sistema {
 							
 
 						case STX: // [Rd] ←Rs
-						try {
+							try {
 								m[reg[ir.r1]].opc = Opcode.DATA;      
 								m[reg[ir.r1]].p = reg[ir.r2];          
 								pc++;
