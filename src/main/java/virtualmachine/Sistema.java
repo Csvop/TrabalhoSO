@@ -70,6 +70,7 @@ public class Sistema {
 				boolean flagEndInv = false;
 				boolean flagIntrInv = false;
 				boolean flagOverflow = false;
+				int aux = 0;
 				// ciclo de instrucoes. acaba cfe instrucao, veja cada caso.
 				// FETCH
 					ir = m[pc]; 	// busca posicao da memoria apontada por pc, guarda em ir
@@ -146,7 +147,8 @@ public class Sistema {
 
 						//Instruções Aritméticas
 						case ADDI: // Rd ← Rd + k
-							if(ir.r1 < Integer.MIN_VALUE || ir.r1 > Integer.MAX_VALUE || ir.r2 < Integer.MIN_VALUE || ir.r2 > Integer.MAX_VALUE || ir.p < Integer.MIN_VALUE || ir.p > Integer.MAX_VALUE)
+							aux = reg[ir.r1] + ir.p;
+							if(aux == -2)
 							{
 								flagOverflow = true;
 							} else {
@@ -156,12 +158,18 @@ public class Sistema {
 							break;
 						
 						case SUBI: // Rd ← Rd – k 
-							reg[ir.r1] = reg[ir.r1] - ir.p;
-							pc++;
+							aux = reg[ir.r1] - ir.p;
+							if(aux == -2)
+							{
+								flagOverflow = true;
+							} else {
+								reg[ir.r1] = reg[ir.r1] - ir.p;
+								pc++;
+							}
 							break;
 
 						case ADD: // Rd ← Rd + Rs
-							int aux = reg[ir.r1] + reg[ir.r2];
+							aux = reg[ir.r1] + reg[ir.r2];
 							if(aux == -2)
 							{
 								flagOverflow = true;
@@ -172,13 +180,25 @@ public class Sistema {
 							break;
 
 						case SUB: // Rd ← Rd - Rs
-							reg[ir.r1] = reg[ir.r1] - reg[ir.r2];
-							pc++;
+							aux = reg[ir.r1] - reg[ir.r2];
+							if(aux == -2)
+							{
+								flagOverflow = true;
+							} else {
+								reg[ir.r1] = reg[ir.r1] - reg[ir.r2];
+								pc++;
+							}
 							break;
 
 						case MULT: // Rd ← Rd * Rs
-							reg[ir.r1] = reg[ir.r1] * reg[ir.r2];
-							pc++;
+							aux = reg[ir.r1] * reg[ir.r2];
+							if(aux == -2)
+							{
+								flagOverflow = true;
+							} else {
+								reg[ir.r1] = reg[ir.r1] * reg[ir.r2];
+								pc++;
+							}
 							break;	
 						
 						//Instruções de Movimentação
