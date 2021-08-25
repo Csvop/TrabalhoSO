@@ -6,7 +6,6 @@ package virtualmachine;
 // Fase 1 - máquina virtual (vide enunciado correspondente)
 //
 
-import java.math.BigInteger;
 import java.util.*;
 public class Sistema {
 	
@@ -33,7 +32,7 @@ public class Sistema {
 
 	public enum Opcode {
 		DATA, ___,		    // se memoria nesta posicao tem um dado, usa DATA, se nao usada ee NULO ___
-		JMP, JMPI, JMPIG, JMPIL, JMPIE,  JMPIM, JMPIGM, JMPILM, JMPIEM, STOP,   // desvios e parada
+		JMP, JMPI, JMPIG, JMPIL, JMPIE,  JMPIM, JMPIGM, JMPILM, JMPIEM, STOP, TRAP,   // desvios e parada
 		ADDI, SUBI,  ADD, SUB, MULT,         // matematicos
 		LDI, LDD, STD,LDX, STX, SWAP;        // movimentacao
 	}
@@ -50,7 +49,7 @@ public class Sistema {
 
 		public CPU(Word[] _m) {     // ref a MEMORIA e interrupt handler passada na criacao da CPU
 			m = _m; 				// usa o atributo 'm' para acessar a memoria.
-			reg = new int[8]; 		// aloca o espaço dos registradores
+			reg = new int[10]; 		// aloca o espaço dos registradores
 		}
 
 		public void setContext(int _pc) {  // no futuro esta funcao vai ter que ser 
@@ -256,6 +255,22 @@ public class Sistema {
 						case STOP: // por enquanto, para execucao
 							break;
 
+						case TRAP: // trap
+							if(reg[8] == 1) { //IN
+								try {
+									Scanner in = new Scanner(System.in);
+									m[reg[9]].opc = Opcode.DATA;
+									m[reg[9]].p = in.nextInt();
+									in.close();
+								} catch (Exception e) {
+									System.out.println("DEU ERRO AQUIIIIIIIIII!");
+								}
+							} else { //OUT
+
+							}
+							pc++;
+							break;
+
 						default:
 							// INSTRUCAO INVALIDA
 							flagIntrInv = true;
@@ -377,7 +392,7 @@ public class Sistema {
 		aux.dump(vm.m, 0, 15);
 		System.out.println("---------------------------------- após execucao ");
 		vm.cpu.run();
-		aux.dump(vm.m, 0, 15);
+		aux.dump(vm.m, 0, 34);
 	}
 
 	public void test3(){
@@ -430,14 +445,15 @@ public class Sistema {
 	   public Word[] progMinimo = new Word[] {
 		    //       OPCODE      R1  R2  P         :: VEJA AS COLUNAS VERMELHAS DA TABELA DE DEFINICAO DE OPERACOES
 			//                                     :: -1 SIGNIFICA QUE O PARAMETRO NAO EXISTE PARA A OPERACAO DEFINIDA
-		    new Word(Opcode.LDI, 0, -1, 2147483647), 	
-			new Word(Opcode.LDI, 1, -1, 2147483647),
+		    new Word(Opcode.LDI, 8, -1, 1), 	
+			new Word(Opcode.LDI, 9, -1, 33),
 			new Word(Opcode.ADD, 0, 1, -1), 
 			new Word(Opcode.STD, 0, -1, 10), 
 			new Word(Opcode.STD, 0, -1, 11), 
 			new Word(Opcode.STD, 0, -1, 12), 
 			new Word(Opcode.STD, 0, -1, 13), 
 			new Word(Opcode.STD, 0, -1, 14), 
+			new Word(Opcode.TRAP, -1, -1, -1),
 			new Word(Opcode.STOP, -1, -1, -1) };
 
 	   public Word[] fibonacci10 = new Word[] { // mesmo que prog exemplo, so que usa r0 no lugar de r8
