@@ -17,7 +17,13 @@
 
 Nossa máquina virtual tem CPU e Memória.
 
-**Enunciado do trabalho**: Em grupos de até 3 alunos. Construir uma máquina virtual conforme definido no enunciado do trabalho. [Link para o pdf](https://moodle.pucrs.br/pluginfile.php/3524730/mod_folder/content/0/TrabalhoSO2021-1-Fase1.pdf) que está no Moodle com o enunciado da primeira parte do trabalho.
+**Enunciado do trabalho**: Em grupos de até 3 alunos. Construir uma máquina virtual conforme definido no enunciado do trabalho que está no Moodle com o enunciado da primeira parte do trabalho.
+
+## Nome dos integrantes
+
+- Bruno Garcia
+- Leonardo Machado
+- Robson Bittencourt
 
 
 ## 1. CPU 
@@ -26,10 +32,6 @@ Nossa máquina virtual tem CPU e Memória.
  Como parte do trabalho voce deve construir alguns programas. 
  Em cada teste da máquina virtual, um destes programas é carregado a partir da posição ```0``` da memória e a CPU então é liberada para executar fazendo seu ciclo.
 
- ## 2. Memória
-
-_Em breve..._
-
 
 ## 🔦ㅤPré Requisitos
 
@@ -37,26 +39,15 @@ Antes de começar, você vai precisar ter instalado o [Java](https://www.oracle.
 Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/).
 Usando a IDE de browser [GitPod](https://gitpod.io/) não é preciso instalar nada localmente no seu computador.
 
-## 🏃ㅤGetting Started
+## 🏃ㅤGetting Started (Seção implementação)
 
-> **Não é preciso ter o gradle instalado para executar o código.**
+Para executar o Sistema execute o método `main()` do arquivo App.java.
 
-```bash
-# Clone este repositório
-$ git clone https://github.com/Csvop/TrabalhoSO/
-
-# Acesse a pasta do projeto no terminal/cmd
-$ cd TrabalhoSO/
-
-# Execute a aplicação
-$ gradle run
-```
-###### Para executar em ambiente Windows use o comando ```gradlew run```.
+Para escolher qual programa executar, remova o comentário referente ao programa desejado. Lembre de deixar apenas um programa descomentado. mais de um programa pode gerar erros.
 
 ## 🌿ㅤBranches
 
 - ```main```: branch para desenvolvimento de features.
-- ```stable```: branch com a última build do projeto em que o código que executa sem erros.
 
 ## 🚀ㅤFeatures
 
@@ -91,13 +82,34 @@ Conjunto de instruções.
 - [x] STX
 - [x] LDD
 - [x] LDX
-- [ ] SWAP
+- [x] SWAP
 
 #### Instruções Genréricas
 
+- [x] TRAP
 - [x] STOP
-- [ ] DATA
+- [x] DATA
 
+## Relatório
+
+### Seção Programas:
+
+Foram feitos todos os programas requeridos: PA, PB e PC. O programa PC parou de funcionar antes da entrega.
+
+### Seção de Saídas
+
+#### PA
+<div align="center"><img src=https://cdn.discordapp.com/attachments/872968154723270657/880547929516015716/unknown.png /></div>
+
+#### PB
+<div align="center"><img src=https://cdn.discordapp.com/attachments/872968154723270657/880548097376260176/unknown.png /></div>
+
+#### PC
+não rodou :(
+
+
+### Seção Considerações
+A utilização do gradle em programas que precisam de input do terminal não funcionarão utilziando `gradle run`
 
 ## 🛠ㅤTecnologias
 

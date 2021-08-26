@@ -391,7 +391,11 @@ public class Sistema {
     // ------------------- instancia e testa sistema
 	public static void main(String args[]) {
 		Sistema s = new Sistema();
-		s.test1();
+		s.test1(); 	// Executa o PA
+		// s.test2(); 	// Executa o PB
+		// s.test3(); 	// Executa o PC
+		// s.test4(); 	// Programa de Trap In
+		// s.test5(); 	// Programa de Trap Out
 	}
     // -------------------------------------------------------------------------------------------------------
     // --------------- TUDO ABAIXO DE MAIN É AUXILIAR PARA FUNCIONAMENTO DO SISTEMA - nao faz parte 
@@ -435,7 +439,7 @@ public class Sistema {
 
 	public void test4(){
 		Aux aux = new Aux();
-		Word[] p = new Programas().fibonacci10;
+		Word[] p = new Programas().progIN;
 		aux.carga(p, vm.m);
 		vm.cpu.setContext(0);
 		System.out.println("---------------------------------- programa carregado ");
@@ -444,6 +448,19 @@ public class Sistema {
 		System.out.println("---------------------------------- após execucao ");
 		aux.dump(vm.m, 0, 35);
 	}
+
+	public void test5(){
+		Aux aux = new Aux();
+		Word[] p = new Programas().progOUT;
+		aux.carga(p, vm.m);
+		vm.cpu.setContext(0);
+		System.out.println("---------------------------------- programa carregado ");
+		aux.dump(vm.m, 0, 30);
+		vm.cpu.run();
+		System.out.println("---------------------------------- após execucao ");
+		aux.dump(vm.m, 0, 35);
+	}
+
 	// -------------------------------------------  classes e funcoes auxiliares
     public class Aux {
 		public void dump(Word w) {
