@@ -257,16 +257,12 @@ public class Sistema {
 
 						case TRAP: // trap
 							if(reg[8] == 1) { //IN
-								try {
-									Scanner in = new Scanner(System.in);
-									m[reg[9]].opc = Opcode.DATA;
-									m[reg[9]].p = in.nextInt();
-									in.close();
-								} catch (Exception e) {
-									System.out.println("DEU ERRO AQUIIIIIIIIII!");
-								}
+								Scanner in = new Scanner(System.in);
+								m[reg[9]].opc = Opcode.DATA;
+								m[reg[9]].p = in.nextInt();
+								in.close();
 							} else { //OUT
-
+								System.out.println("\nOUTPUT -> " + m[reg[9]].p + " <- OUTPUT\n");
 							}
 							pc++;
 							break;
@@ -373,23 +369,23 @@ public class Sistema {
 	// -------------------------------------------- teste do sistema ,  veja classe de programas
 	public void test1(){
 		Aux aux = new Aux();
-		Word[] p = new Programas().fibonacci10;
+		Word[] p = new Programas().progIN;
 		aux.carga(p, vm.m);
 		vm.cpu.setContext(0);
 		System.out.println("---------------------------------- programa carregado ");
-		aux.dump(vm.m, 0, 33);
+		aux.dump(vm.m, 0, 34);
 		vm.cpu.run();
 		System.out.println("---------------------------------- após execucao ");
-		aux.dump(vm.m, 0, 33);
+		aux.dump(vm.m, 0, 34);
 	}
 
 	public void test2(){
 		Aux aux = new Aux();
-		Word[] p = new Programas().progMinimo;
+		Word[] p = new Programas().progOUT;
 		aux.carga(p, vm.m);
 		vm.cpu.setContext(0);
 		System.out.println("---------------------------------- programa carregado ");
-		aux.dump(vm.m, 0, 15);
+		aux.dump(vm.m, 0, 34);
 		System.out.println("---------------------------------- após execucao ");
 		vm.cpu.run();
 		aux.dump(vm.m, 0, 34);
@@ -442,17 +438,21 @@ public class Sistema {
 	
    //  -------------------------------------------- programas aa disposicao para copiar na memoria (vide aux.carga)
    public class Programas {
-	   public Word[] progMinimo = new Word[] {
+	   public Word[] progIN = new Word[] {
 		    //       OPCODE      R1  R2  P         :: VEJA AS COLUNAS VERMELHAS DA TABELA DE DEFINICAO DE OPERACOES
 			//                                     :: -1 SIGNIFICA QUE O PARAMETRO NAO EXISTE PARA A OPERACAO DEFINIDA
 		    new Word(Opcode.LDI, 8, -1, 1), 	
-			new Word(Opcode.LDI, 9, -1, 33),
-			new Word(Opcode.ADD, 0, 1, -1), 
-			new Word(Opcode.STD, 0, -1, 10), 
-			new Word(Opcode.STD, 0, -1, 11), 
-			new Word(Opcode.STD, 0, -1, 12), 
-			new Word(Opcode.STD, 0, -1, 13), 
-			new Word(Opcode.STD, 0, -1, 14), 
+			new Word(Opcode.LDI, 9, -1, 33),  
+			new Word(Opcode.TRAP, -1, -1, -1),
+			new Word(Opcode.STOP, -1, -1, -1) };
+
+		public Word[] progOUT = new Word[] {
+			//       OPCODE      R1  R2  P         :: VEJA AS COLUNAS VERMELHAS DA TABELA DE DEFINICAO DE OPERACOES
+			//                                     :: -1 SIGNIFICA QUE O PARAMETRO NAO EXISTE PARA A OPERACAO DEFINIDA
+			new Word(Opcode.LDI, 0, -1, 999),
+			new Word(Opcode.STD, 0, -1, 33),
+			new Word(Opcode.LDI, 8, -1, 2), 	
+			new Word(Opcode.LDI, 9, -1, 33),  
 			new Word(Opcode.TRAP, -1, -1, -1),
 			new Word(Opcode.STOP, -1, -1, -1) };
 
