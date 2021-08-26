@@ -34,7 +34,12 @@ public class Sistema {
 		DATA, ___,		    // se memoria nesta posicao tem um dado, usa DATA, se nao usada ee NULO ___
 		JMP, JMPI, JMPIG, JMPIL, JMPIE,  JMPIM, JMPIGM, JMPILM, JMPIEM, STOP, TRAP,   // desvios e parada
 		ADDI, SUBI,  ADD, SUB, MULT,         // matematicos
-		LDI, LDD, STD,LDX, STX, SWAP;        // movimentacao
+		/**
+		 *  Rd ← k
+		 */
+		LDI,
+		/** Rd ← [A] */ 
+		LDD, STD,LDX, STX, SWAP;        // movimentacao
 	}
 
 	public class CPU {
@@ -359,9 +364,7 @@ public class Sistema {
     // ------------------- instancia e testa sistema
 	public static void main(String args[]) {
 		Sistema s = new Sistema();
-		//s.test1();
-		s.test2();
-		//s.test3();
+		s.test3();
 	}
     // -------------------------------------------------------------------------------------------------------
     // --------------- TUDO ABAIXO DE MAIN É AUXILIAR PARA FUNCIONAMENTO DO SISTEMA - nao faz parte 
@@ -405,14 +408,14 @@ public class Sistema {
 
 	public void test4(){
 		Aux aux = new Aux();
-		Word[] p = new Programas().PA;
+		Word[] p = new Programas().PB;
 		aux.carga(p, vm.m);
 		vm.cpu.setContext(0);
 		System.out.println("---------------------------------- programa carregado ");
-		aux.dump(vm.m, 0, 15);
+		aux.dump(vm.m, 0, 50);
 		vm.cpu.run();
 		System.out.println("---------------------------------- após execucao ");
-		aux.dump(vm.m, 0, 15);
+		aux.dump(vm.m, 0, 50);
 	}
 	// -------------------------------------------  classes e funcoes auxiliares
     public class Aux {
@@ -477,20 +480,7 @@ public class Sistema {
 			new Word(Opcode.SUB, 7, 0, -1),
 			new Word(Opcode.JMPIG, 6, 7, -1), 
 			new Word(Opcode.STOP, -1, -1, -1),   // POS 16
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),   // POS 20
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1)  // ate aqui - serie de fibonacci ficara armazenada
-			   };   
+		};   
 
 	   public Word[] fatorial = new Word[] { 	 // este fatorial so aceita valores positivos.   nao pode ser zero
 												 // linha   coment
@@ -527,21 +517,21 @@ public class Sistema {
 			new Word(Opcode.SUB, 7, 0, -1),
 			new Word(Opcode.JMPIG, 6, 7, -1), 
 			new Word(Opcode.STOP, -1, -1, -1),   // POS 16
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),   // POS 20
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1),
-			new Word(Opcode.DATA, -1, -1, -1)};  // ate aqui - serie de fibonacci ficara armazenada
+		};  // ate aqui - serie de fibonacci ficara armazenada
 
-		public Word[] PB = new Word[] {};
+		public Word[] PB = new Word[] {
+			new Word(Opcode.LDI, 0, -1, -1),
+			new Word(Opcode.STD, 0, -1, 38),
+			new Word(Opcode.LDI, 8, -1, 2),
+			new Word(Opcode.LDI, 9, -1, 38),
+			new Word(Opcode.LDI, 1, -1, 8),
+			new Word(Opcode.JMPIL, 1, 0, -1), // IF(R0 < 0) -> posicao 6
+			new Word(Opcode.LDI, 0, -1, 10), // Fatorial
+
+			new Word(Opcode.TRAP, -1, -1, -1),
+			new Word(Opcode.STOP, -1, -1, -1),
+		};
+
 		public Word[] PC = new Word[] {};
     }
 }
