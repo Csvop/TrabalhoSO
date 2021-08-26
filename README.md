@@ -35,15 +35,35 @@ Nossa máquina virtual tem CPU e Memória.
 
 ## 🔦ㅤPré Requisitos
 
-Antes de começar, você vai precisar ter instalado o [Java](https://www.oracle.com/br/java/technologies/javase/javase-jdk8-downloads.html) e o [Git](https://git-scm.com) localmente no seu computador. 
+Antes de começar, você vai precisar ter instalado o [JDK](https://www.oracle.com/br/java/technologies/javase/javase-jdk8-downloads.html) localmente no seu computador para compilar o código. 
 Além disto é bom ter um editor para trabalhar com o código como [VSCode](https://code.visualstudio.com/).
 Usando a IDE de browser [GitPod](https://gitpod.io/) não é preciso instalar nada localmente no seu computador.
 
 ## 🏃ㅤGetting Started (Seção implementação)
 
-Para executar o Sistema execute o método `main()` do arquivo App.java.
+Para executar o Sistema execute o método `main()` do arquivo `Sistema.java`.
 
-Para escolher qual programa executar, remova o comentário referente ao programa desejado. Lembre de deixar apenas um programa descomentado. mais de um programa pode gerar erros.
+```bash
+# Acesse a pasta do projeto no terminal
+$ cd ../TrabalhoSO/src/main/java/virtualmachine/
+
+# Execute a aplicação
+$ java Sistema.java
+```
+
+Para escolher qual programa executar, remova o comentário referente ao programa desejado. 
+Lembre de deixar apenas um programa não comentado. Mais de um programa não comentado pode gerar erros.
+
+```java
+public static void main(String args[]) {
+  Sistema s = new Sistema();
+  s.test1(); 	// Executa o PA
+  // s.test2(); 	// Executa o PB
+  // s.test3(); 	// Executa o PC
+  // s.test4(); 	// Programa de Trap In
+  // s.test5(); 	// Programa de Trap Out
+}
+```
 
 ## 🌿ㅤBranches
 
@@ -51,48 +71,19 @@ Para escolher qual programa executar, remova o comentário referente ao programa
 
 ## 🚀ㅤFeatures
 
-### OPCODES
-
-Conjunto de instruções.
-
-#### Instruções JUMP
-
-- [x] JMP
-- [x] JMPI
-- [x] JMPIG
-- [x] JMPIL
-- [x] JMPIE
-- [x] JMPIM
-- [x] JMPIGM
-- [x] JMPILM
-- [x] JMPIEM
-
-#### Instruções Aritméticas
-
-- [x] ADD
-- [x] ADDI
-- [x] SUB
-- [x] SUBI
-- [x] MULT
-
-#### Instruções de Movimentação
-
-- [x] LDI
-- [x] STD
-- [x] STX
-- [x] LDD
-- [x] LDX
-- [x] SWAP
-
-#### Instruções Genréricas
-
-- [x] TRAP
-- [x] STOP
-- [x] DATA
+- [x] CPU
+- [x] Memória
+- [x] Interrupções
+- [x] Chamadas de Sistema
+- [ ] Gerência de Memória
+- [ ] Gerência de Processos
+- [ ] Escalonamento
+- [ ] Concorrência
+- [ ] Semáforos
 
 ## Relatório
 
-### Seção Programas:
+### Seção Programas
 
 Foram feitos todos os programas requeridos: PA, PB e PC. O programa PC parou de funcionar antes da entrega.
 
@@ -109,12 +100,13 @@ não rodou :(
 
 
 ### Seção Considerações
-A utilização do gradle em programas que precisam de input do terminal não funcionarão utilziando `gradle run`
+A utilização do gradle pelo comando `gradle run` pode causar alguns problemas quando são executados programas que precisam ler valores diretamente do terminal (`System.in`).
 
 ## 🛠ㅤTecnologias
 
 As seguintes ferramentas foram usadas na construção do projeto:
 
+- [Git](https://git-scm.com/)
+- [Java](https://www.java.com/)
+- [Gitpod](https://gitpod.io/)
 - [Gradle](https://gradle.org/install/)
-
-
