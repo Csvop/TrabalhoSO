@@ -76,12 +76,15 @@ public class Sistema {
 		private int[] reg;       	// registradores da CPU
 
 		private Word[] m;   // CPU acessa MEMORIA, guarda referencia 'm' a ela. memoria nao muda. ee sempre a mesma.
-			
+
+		public Interrupt interrupt;
+		
 		private Aux aux = new Aux();
 
 		public CPU(Word[] _m) {     // ref a MEMORIA e interrupt handler passada na criacao da CPU
 			m = _m; 				// usa o atributo 'm' para acessar a memoria.
 			reg = new int[10]; 		// aloca o espaço dos registradores
+			interrupt = Interrupt.NONE;
 		}
 
 		public void setContext(int _pc) {  // no futuro esta funcao vai ter que ser 
@@ -97,10 +100,7 @@ public class Sistema {
 		}
 
 		public void run() { 		// execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente setado
-			while (true) { 	
-				boolean flagEndInv = false;
-				boolean flagIntrInv = false;
-				boolean flagOverflow = false;
+			while (interrupt == Interrupt.NONE) { 	
 				int aux = 0;
 				// ciclo de instrucoes. acaba cfe instrucao, veja cada caso.
 				// FETCH
@@ -116,7 +116,7 @@ public class Sistema {
 							{
 								pc = ir.p;
 							} else {
-								flagOverflow =  true;
+								interrupt = Interrupt.OVERFLOW;
 							}
 						    break;
 
@@ -181,7 +181,7 @@ public class Sistema {
 							aux = reg[ir.r1] + ir.p;
 							if(aux == -2)
 							{
-								flagOverflow = true;
+								interrupt = Interrupt.OVERFLOW;
 							} else {
 								reg[ir.r1] = reg[ir.r1] + ir.p;
 								pc++;
@@ -192,7 +192,7 @@ public class Sistema {
 							aux = reg[ir.r1] - ir.p;
 							if(aux == -2)
 							{
-								flagOverflow = true;
+								interrupt = Interrupt.OVERFLOW;
 							} else {
 								reg[ir.r1] = reg[ir.r1] - ir.p;
 								pc++;
@@ -203,7 +203,7 @@ public class Sistema {
 							aux = reg[ir.r1] + reg[ir.r2];
 							if(aux == -2)
 							{
-								flagOverflow = true;
+								interrupt = Interrupt.OVERFLOW;
 							} else {
 								reg[ir.r1] = reg[ir.r1] + reg[ir.r2];
 								pc++;
@@ -214,7 +214,7 @@ public class Sistema {
 							aux = reg[ir.r1] - reg[ir.r2];
 							if(aux == -2)
 							{
-								flagOverflow = true;
+								interrupt = Interrupt.OVERFLOW;
 							} else {
 								reg[ir.r1] = reg[ir.r1] - reg[ir.r2];
 								pc++;
@@ -225,7 +225,7 @@ public class Sistema {
 							aux = reg[ir.r1] * reg[ir.r2];
 							if(aux == -2)
 							{
-								flagOverflow = true;
+								interrupt = Interrupt.OVERFLOW;
 							} else {
 								reg[ir.r1] = reg[ir.r1] * reg[ir.r2];
 								pc++;
@@ -238,7 +238,7 @@ public class Sistema {
 								reg[ir.r1] = ir.p;
 								pc++;
 							} catch (Exception e) {
-								flagEndInv = true;
+								interrupt = Interrupt.INVALID_ADDRESS;
 							}
 							break;
 							
@@ -248,7 +248,7 @@ public class Sistema {
 								reg[ir.r1] = m[ir.p].p; // m == memoria
 								pc++;
 							} catch (Exception e) {
-								flagEndInv = true;
+								interrupt = Interrupt.INVALID_ADDRESS;
 							}
 							break;
 							
@@ -259,7 +259,7 @@ public class Sistema {
 								m[ir.p].p = reg[ir.r1];
 								pc++;
 							} catch (Exception e) {
-								flagEndInv = true;
+								interrupt = Interrupt.INVALID_ADDRESS;
 							}
 							break;
 
@@ -268,7 +268,7 @@ public class Sistema {
 								reg[ir.r1] = m[ir.r2].p; // m == memoria
 								pc++;
 							} catch (Exception e) {
-								flagEndInv = true;
+								interrupt = Interrupt.INVALID_ADDRESS;
 							}
 							break;
 							
@@ -279,62 +279,56 @@ public class Sistema {
 								m[reg[ir.r1]].p = reg[ir.r2];          
 								pc++;
 							} catch (Exception e) {
-								flagEndInv = true;
+								interrupt = Interrupt.INVALID_ADDRESS;
 							}
 							break;
 							
 
 						case STOP: // por enquanto, para execucao
+							interrupt = Interrupt.STOP;
 							break;
 
 						case TRAP: // trap
-							if(reg[8] == 1) { //IN
-								Scanner in = new Scanner(System.in);
-								m[reg[9]].opc = Opcode.DATA;
-								m[reg[9]].p = in.nextInt();
-								in.close();
-							} else { //OUT
-								System.out.println("\nOUTPUT -> " + m[reg[9]].p + " <- OUTPUT\n");
-							}
+							interrupt = Interrupt.TRAP;
 							pc++;
 							break;
 
 						default:
-							// INSTRUCAO INVALIDA
-							flagIntrInv = true;
+							interrupt = Interrupt.INVALID_INSTRUCTION;
 							break;
 					}
 				
-				// VERIFICA INTERRUPÇÃO !!! - TERCEIRA FASE DO CICLO DE INSTRUÇÕES
-				if (ir.opc==Opcode.STOP) {   
-					break; // break sai do loop da cpu
-				}
-
-				// ENDERECO INVÁLIDO
-				if(flagEndInv == true) 
-				{
-					System.out.println("\n-------------------------------------------------");
-					System.out.println("---------INTERRUPÇÃO: Endereço Inválido!---------");
-					System.out.println("-------------------------------------------------\n");
-					break;
-				}
-
-				// INSTRUCAO INVALIDA
-				if(flagIntrInv == true)
-				{
-					System.out.println("\n-------------------------------------------------");
-					System.out.println("---------NTERRUPÇÃO: Instrução Inválida!---------");
-					System.out.println("-------------------------------------------------\n");
-					break;
-				}
-
-				// OVERFLOW
-				if(flagOverflow == true)
-				{
-					System.out.println("\n----------------------------------------");
-					System.out.println("---------INTERRUPÇÃO: Overflow!---------");
-					System.out.println("----------------------------------------\n");
-					break;
+				switch (interrupt) {
+					case NONE:
+						break;
+					
+					case INVALID_ADDRESS:
+						System.out.println("\n-------------------------------------------------");
+						System.out.println("---------INTERRUPÇÃO: Endereço Inválido!---------");
+						System.out.println("-------------------------------------------------\n");
+						break;
+	
+					case INVALID_INSTRUCTION:
+						System.out.println("\n-------------------------------------------------");
+						System.out.println("---------INTERRUPÇÃO: Instrução Inválida!---------");
+						System.out.println("-------------------------------------------------\n");
+						break;
+	
+					case OVERFLOW:
+						System.out.println("\n----------------------------------------");
+						System.out.println("---------INTERRUPÇÃO: Overflow!---------");
+						System.out.println("----------------------------------------\n");
+						break;
+					
+					case TRAP:
+						TrapHandling th = new TrapHandling();
+						th.trap(this);
+						interrupt = Interrupt.NONE;
+						break;
+					
+					case STOP:
+						System.out.println("\n----------------STOP--------------------\n");
+						break;
 				}
 			}
 		}
@@ -342,6 +336,43 @@ public class Sistema {
     // ------------------ C P U - fim ------------------------------------------------------------------------
 	// -------------------------------------------------------------------------------------------------------
 
+	public enum Interrupt {
+		NONE, INVALID_ADDRESS, INVALID_INSTRUCTION, OVERFLOW, TRAP, STOP
+	}
+
+	public class TrapHandling {
+
+		public void trap(CPU cpu) {
+			System.out.println("reg[8] = " + cpu.reg[8]);
+			System.out.println("reg[9] = " + cpu.reg[9]);
+	
+			switch (cpu.reg[8]) {
+				case 1:
+					Scanner in = new Scanner(System.in);
+					System.out.println("ENTRADA [Trap IN]");
+					System.out.println("\n > Digite um valor inteiro: ");
+					String input = in.nextLine();
+					in.close();
+	
+					// Converte o input para um valor inteiro
+					int value = Integer.parseInt(input);
+	
+					cpu.m[cpu.reg[9]].opc = Opcode.DATA;
+					cpu.m[cpu.reg[9]].p = value;
+	
+					System.out.println("Valor armazenado " + cpu.m[cpu.reg[9]].p);
+					System.out.println("Posição " + cpu.reg[9]);
+					break;
+	
+				case 2:
+					System.out.println("SAÍDA [Trap OUT]");
+					System.out.println("Valor: " + cpu.m[cpu.reg[9]].p);
+					System.out.println("Posição " + cpu.reg[9]);
+					break;
+			}
+		}
+	}
+	
 	
     // ------------------- V M  - constituida de CPU e MEMORIA -----------------------------------------------
     // -------------------------- atributos e construcao da VM -----------------------------------------------
@@ -443,10 +474,10 @@ public class Sistema {
 		aux.carga(p, vm.m);
 		vm.cpu.setContext(0);
 		System.out.println("---------------------------------- programa carregado ");
-		aux.dump(vm.m, 0, 30);
+		aux.dump(vm.m, 0, 11);
 		vm.cpu.run();
 		System.out.println("---------------------------------- após execucao ");
-		aux.dump(vm.m, 0, 35);
+		aux.dump(vm.m, 0, 11);
 	}
 
 	public void test5(){
@@ -455,10 +486,10 @@ public class Sistema {
 		aux.carga(p, vm.m);
 		vm.cpu.setContext(0);
 		System.out.println("---------------------------------- programa carregado ");
-		aux.dump(vm.m, 0, 30);
+		aux.dump(vm.m, 0, 11);
 		vm.cpu.run();
 		System.out.println("---------------------------------- após execucao ");
-		aux.dump(vm.m, 0, 35);
+		aux.dump(vm.m, 0, 11);
 	}
 
 	// -------------------------------------------  classes e funcoes auxiliares
@@ -489,7 +520,7 @@ public class Sistema {
 		    //       OPCODE      R1  R2  P         :: VEJA AS COLUNAS VERMELHAS DA TABELA DE DEFINICAO DE OPERACOES
 			//                                     :: -1 SIGNIFICA QUE O PARAMETRO NAO EXISTE PARA A OPERACAO DEFINIDA
 		    new Word(Opcode.LDI, 8, -1, 1), 	
-			new Word(Opcode.LDI, 9, -1, 33),  
+			new Word(Opcode.LDI, 9, -1, 10),  
 			new Word(Opcode.TRAP, -1, -1, -1),
 			new Word(Opcode.STOP, -1, -1, -1) };
 
@@ -497,9 +528,9 @@ public class Sistema {
 			//       OPCODE      R1  R2  P         :: VEJA AS COLUNAS VERMELHAS DA TABELA DE DEFINICAO DE OPERACOES
 			//                                     :: -1 SIGNIFICA QUE O PARAMETRO NAO EXISTE PARA A OPERACAO DEFINIDA
 			new Word(Opcode.LDI, 0, -1, 999),
-			new Word(Opcode.STD, 0, -1, 33),
+			new Word(Opcode.STD, 0, -1, 10),
 			new Word(Opcode.LDI, 8, -1, 2), 	
-			new Word(Opcode.LDI, 9, -1, 33),  
+			new Word(Opcode.LDI, 9, -1, 10),  
 			new Word(Opcode.TRAP, -1, -1, -1),
 			new Word(Opcode.STOP, -1, -1, -1) };
 
