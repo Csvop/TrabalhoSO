@@ -6,6 +6,7 @@ package virtualmachine;
 // Fase 1 - máquina virtual (vide enunciado correspondente)
 //
 
+import util.*;
 import java.util.*;
 
 public class Sistema {
@@ -421,6 +422,8 @@ public class Sistema {
     // -------------------------------------------------------------------------------------------------------
     // ------------------- instancia e testa sistema
 	public static void main(String args[]) {
+		Console.info("Iniciando Máquina Virtual... "); Console.wait(1200);
+
 		Sistema s = new Sistema();
 		s.test1(); 	// Executa o PA
 		// s.test2(); 	// Executa o PB
