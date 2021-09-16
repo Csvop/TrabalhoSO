@@ -5,13 +5,7 @@ import virtualmachine.Sistema;
  */
 
 public class App {
-
     public static void main(String[] args) {
         Sistema.main(args);
-    }
-
-    public void bootstrap() {
-        // Load each program one at a time while each program is connected to the next   
-        // Load drivers
     }
 }

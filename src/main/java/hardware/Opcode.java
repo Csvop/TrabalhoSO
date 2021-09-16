@@ -1,4 +1,4 @@
-package virtualmachine;
+package hardware;
 
 public enum Opcode {
     DATA, ___,		    // se memoria nesta posicao tem um dado, usa DATA, se nao usada ee NULO ___
