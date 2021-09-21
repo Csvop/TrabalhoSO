@@ -11,15 +11,15 @@ public class CPU {
     public Word ir; // instruction register,
     public int[] reg; // registradores da CPU
 
-    public Word[] m; // CPU acessa MEMORIA, guarda referencia 'm' a ela. memoria nao muda. ee sempre
+    public Memory m; // CPU acessa MEMORIA, guarda referencia 'm' a ela. memoria nao muda. ee sempre
                       // a mesma.
 
     public Interrupt interrupt;
 
     public Aux aux = new Aux();
 
-    public CPU(Word[] _m) { // ref a MEMORIA e interrupt handler passada na criacao da CPU
-        m = _m; // usa o atributo 'm' para acessar a memoria.
+    public CPU() { // ref a MEMORIA e interrupt handler passada na criacao da CPU
+        m = Memory.get(); // usa o atributo 'm' para acessar a memoria.
         reg = new int[10]; // aloca o espaço dos registradores
         interrupt = Interrupt.NONE;
     }
@@ -47,7 +47,7 @@ public class CPU {
             int aux = 0;
             // ciclo de instrucoes. acaba cfe instrucao, veja cada caso.
             // FETCH
-            ir = m[pc]; // busca posicao da memoria apontada por pc, guarda em ir
+            ir = m.data[pc]; // busca posicao da memoria apontada por pc, guarda em ir
             // if debug
             showState();
             // EXECUTA INSTRUCAO NO ir
@@ -181,7 +181,7 @@ public class CPU {
 
                 case LDD: // Rd ← [A]
                     try {
-                        reg[ir.r1] = m[ir.p].p; // m == memoria
+                        reg[ir.r1] = m.data[ir.p].p; // m == memoria
                         pc++;
                     } catch (Exception e) {
                         interrupt = Interrupt.INVALID_ADDRESS;
@@ -190,8 +190,8 @@ public class CPU {
 
                 case STD: // [A] ← Rs
                     try {
-                        m[ir.p].opc = Opcode.DATA;
-                        m[ir.p].p = reg[ir.r1];
+                        m.data[ir.p].opc = Opcode.DATA;
+                        m.data[ir.p].p = reg[ir.r1];
                         pc++;
                     } catch (Exception e) {
                         interrupt = Interrupt.INVALID_ADDRESS;
@@ -200,7 +200,7 @@ public class CPU {
 
                 case LDX: // Rd ← [Rs]
                     try {
-                        reg[ir.r1] = m[ir.r2].p; // m == memoria
+                        reg[ir.r1] = m.data[ir.r2].p; // m == memoria
                         pc++;
                     } catch (Exception e) {
                         interrupt = Interrupt.INVALID_ADDRESS;
@@ -209,8 +209,8 @@ public class CPU {
 
                 case STX: // [Rd] ←Rs
                     try {
-                        m[reg[ir.r1]].opc = Opcode.DATA;
-                        m[reg[ir.r1]].p = reg[ir.r2];
+                        m.data[reg[ir.r1]].opc = Opcode.DATA;
+                        m.data[reg[ir.r1]].p = reg[ir.r2];
                         pc++;
                     } catch (Exception e) {
                         interrupt = Interrupt.INVALID_ADDRESS;

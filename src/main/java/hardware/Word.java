@@ -9,4 +9,9 @@ public class Word { 	// cada posicao da memoria tem uma instrucao (ou um dado)
     public Word(Opcode _opc, int _r1, int _r2, int _p) {  
         opc = _opc;   r1 = _r1;    r2 = _r2;	p = _p;
     }
+
+    public static Word copy(Word _word) {
+		Word word = new Word(_word.opc, _word.r1, _word.r2, _word.p);
+		return word;
+	}
 }
