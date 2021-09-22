@@ -15,95 +15,121 @@ public class Sistema {
 	public VM vm;
 
     public Sistema(){   // a VM com tratamento de interrupções
-		 vm = new VM();
+		vm = new VM();
 	}
 
 	public static void main(String args[]) {
 		Console.info("Iniciando Máquina Virtual... ");
 
 		Sistema s = new Sistema();
-		// s.test1(); 	// Executa o PA
+
+		s.trapInTest();
+		s.trapOutTest();
+		// s.test1(); 	
 		// s.test2(); 	// Executa o PB
 		// s.test3(); 	// Executa o PC (not working)
-		s.test(); 	// Programa de Trap In
-		// s.test5(); 	// Programa de Trap Out
 
 		Console.info("Encerrando Máquina Virtual...");
 	}
 
-	public void test(){
-		Word[] p = new Programas().PA;
-		Aux aux = new Aux();
-		//aux.carga(p, Memory.get().data);
+	public void trapInTest(){
+		Console.info("Iniciando trapInTest()");
+
 		MemoryManager mm = new MemoryManager();
-		mm.allocate(p);
+		mm.allocate(Program.TRAP_IN);
+
+		Console.debug(" > Programa TRAP_IN carregado.");
+		mm.dump(Memory.get().data, 0, 11);
+		
+		Console.debug(" > CPU.run() ");
 		vm.cpu.setContext(0);
-		System.out.println("---------------------------------- programa carregado ");
-		aux.dump(Memory.get().data, 0, 50);
 		vm.cpu.run();
-		System.out.println("---------------------------------- após execucao ");
-		aux.dump(Memory.get().data, 0, 50);
+
+		Console.debug(" > Programa TRAP_IN encerrado.");
+		mm.dump(Memory.get().data, 0, 11);
+
+		Console.debug(" > Memory.clearMemory() ");
+		Memory.get().clearMemory();
+	}
+	
+	public void trapOutTest(){
+		Console.info("Iniciando trapOutTest()");
+
+		MemoryManager mm = new MemoryManager();
+		mm.allocate(Program.TRAP_OUT);
+
+		Console.debug(" > Programa TRAP_OUT carregado.");
+		mm.dump(Memory.get().data, 0, 11);
+		
+		Console.debug(" > CPU.run() ");
+		vm.cpu.setContext(0);
+		vm.cpu.run();
+
+		Console.debug(" > Programa TRAP_OUT encerrado.");
+		mm.dump(Memory.get().data, 0, 11);
+
+		Console.debug(" > Memory.clearMemory() ");
+		Memory.get().clearMemory();
 	}
 
 	public void test1(){
-		Aux aux = new Aux();
-		Word[] p = new Programas().PA;
-		aux.carga(p, Memory.get().data);
+		Console.debug(" > Iniciando test1()");
+
+		MemoryManager mm = new MemoryManager();
+		mm.allocate(Program.PA);
+
+		Console.debug(" > Programa A carregado.");
+		mm.dump(Memory.get().data, 0, 50);
+		
+		Console.debug(" > CPU.run() ");
 		vm.cpu.setContext(0);
-		System.out.println("---------------------------------- programa carregado ");
-		aux.dump(Memory.get().data, 0, 50);
 		vm.cpu.run();
-		System.out.println("---------------------------------- após execucao ");
-		aux.dump(Memory.get().data, 0, 50);
+
+		Console.debug(" > Programa A encerrado.");
+		mm.dump(Memory.get().data, 0, 50);
+
+		Console.debug(" > Memory.clearMemory() ");
+		Memory.get().clearMemory();
 	}
 
 	public void test2(){
-		Aux aux = new Aux();
-		Word[] p = new Programas().PB;
-		aux.carga(p, Memory.get().data);
+		Console.debug(" > Iniciando test2()");
+
+		MemoryManager mm = new MemoryManager();
+		mm.allocate(Program.PB);
+
+		Console.debug(" > Programa B carregado.");
+		mm.dump(Memory.get().data, 0, 20);
+		
+		Console.debug(" > CPU.run() ");
 		vm.cpu.setContext(0);
-		System.out.println("---------------------------------- programa carregado ");
-		aux.dump(Memory.get().data, 0, 20);
-		System.out.println("---------------------------------- após execucao ");
 		vm.cpu.run();
-		aux.dump(Memory.get().data, 0, 20);
+
+		Console.debug(" > Programa B encerrado.");
+		mm.dump(Memory.get().data, 0, 20);
+
+		Console.debug(" > Memory.clearMemory() ");
+		Memory.get().clearMemory();
 	}
 
 	public void test3(){
-		Aux aux = new Aux();
-		Word[] p = new Programas().PC;
-		aux.carga(p, Memory.get().data);
-		vm.cpu.setContext(0);
-		System.out.println("---------------------------------- programa carregado ");
-		aux.dump(Memory.get().data, 0, 50);
-		vm.cpu.run();
-		System.out.println("---------------------------------- após execucao ");
-		aux.dump(Memory.get().data, 0, 50);
-	}
+		Console.debug(" > Iniciando test3()");
 
-	public void test4(){
-		Aux aux = new Aux();
-		Word[] p = new Programas().progIN;
-		aux.carga(p, Memory.get().data);
-		vm.cpu.setContext(0);
-		System.out.println("---------------------------------- programa carregado ");
-		aux.dump(Memory.get().data, 0, 11);
-		vm.cpu.run();
-		System.out.println("---------------------------------- após execucao ");
-		aux.dump(Memory.get().data, 0, 11);
-	}
+		MemoryManager mm = new MemoryManager();
+		mm.allocate(Program.PC);
 
-	public void test5(){
-		Aux aux = new Aux();
-		Word[] p = new Programas().progOUT;
-		aux.carga(p, Memory.get().data);
+		Console.debug(" > Programa C carregado.");
+		mm.dump(Memory.get().data, 0, 50);
+		
+		Console.debug(" > CPU.run() ");
 		vm.cpu.setContext(0);
-		System.out.println("---------------------------------- programa carregado ");
-		aux.dump(Memory.get().data, 0, 11);
 		vm.cpu.run();
-		System.out.println("---------------------------------- após execucao ");
-		aux.dump(Memory.get().data, 0, 11);
-	}
 
+		Console.debug(" > Programa C encerrado.");
+		mm.dump(Memory.get().data, 0, 50);
+
+		Console.debug(" > Memory.clearMemory() ");
+		Memory.get().clearMemory();
+	}
 
 }

@@ -11,8 +11,7 @@ public class CPU {
     public Word ir; // instruction register,
     public int[] reg; // registradores da CPU
 
-    public Memory m; // CPU acessa MEMORIA, guarda referencia 'm' a ela. memoria nao muda. ee sempre
-                      // a mesma.
+    public Memory m; // CPU acessa MEMORIA, guarda referencia 'm' a ela. memoria nao muda. ee sempre a mesma.
 
     public Interrupt interrupt;
 
@@ -26,6 +25,7 @@ public class CPU {
 
     public void setContext(int _pc) { // no futuro esta funcao vai ter que ser
         pc = _pc; // limite e pc (deve ser zero nesta versao)
+        interrupt = Interrupt.NONE;
     }
 
     public void showState() {

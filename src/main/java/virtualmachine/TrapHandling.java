@@ -9,12 +9,11 @@ import hardware.CPU;
 public class TrapHandling {
 
     public static void trap(CPU cpu) {
-        Console.log("reg[8] = " + cpu.reg[8]);
-        Console.log("reg[9] = " + cpu.reg[9]);
+        Console.debug(" > CPU.reg[8] = " + cpu.reg[8]);
+        Console.debug(" > CPU.reg[9] = " + cpu.reg[9]);
 
         switch (cpu.reg[8]) {
             case 1:
-                Console.log("ENTRADA [Trap IN]");
                 Console.print("\n > Digite um valor inteiro: ");
 
                 Scanner in = new Scanner(System.in);
@@ -26,13 +25,17 @@ public class TrapHandling {
                 cpu.m.data[cpu.reg[9]].opc = Opcode.DATA;
                 cpu.m.data[cpu.reg[9]].p = value;
 
-                Console.log("Valor armazenado " + cpu.m.data[cpu.reg[9]].p);
-                Console.log("Posição " + cpu.reg[9]);
+                Console.info(
+                    "O valor " + cpu.m.data[cpu.reg[9]].p + 
+                    " foi armazenado na posição [" + cpu.reg[9] + "] da memória."
+                );
                 break;
 
             case 2:
-                Console.log("SAÍDA [Trap OUT]");
-                Console.log("Valor: " + cpu.m.data[cpu.reg[9]].p);
+                Console.info(
+                    "O valor armazenado na posição [" + cpu.reg[9] + 
+                    "] da memória é " + cpu.m.data[cpu.reg[9]].p
+                );
                 break;
         }
     }

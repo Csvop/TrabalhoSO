@@ -2,6 +2,7 @@ package software;
 
 import hardware.Memory;
 import hardware.Word;
+import util.Console;
 
 import java.util.ArrayList;
 
@@ -111,10 +112,27 @@ public class MemoryManager {
 
                     // Libera a memoria
                     for (int position = (i * frameSize); position < (i + 1) * frameSize; position++) {
-                        Memory.get().write(Memory.BLANK, position);
+                        Memory.get().write(Word.BLANK, position);
                     }
                 }
             }
         }
+    }
+
+    // Métodos auxiliares
+    public void dump(Word w) {
+        Console.print("[ "); 
+        Console.print(w.opc); Console.print(", ");
+        Console.print(w.r1);  Console.print(", ");
+        Console.print(w.r2);  Console.print(", ");
+        Console.print(w.p);  Console.log("  ] ");
+    }
+
+    public void dump(Word[] m, int ini, int fim) {
+        Console.debug(" > Memory.dump() \n");
+        for (int i = ini; i < fim; i++) {
+            Console.print(i); Console.print(":  ");  dump(m[i]);
+        }
+        Console.print("\n");
     }
 }
