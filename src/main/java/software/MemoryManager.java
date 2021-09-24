@@ -135,4 +135,20 @@ public class MemoryManager {
         }
         Console.print("\n");
     }
+
+    public void dump(boolean[] frames) {
+        Console.debug(" > Memory.dump(frames) \n");
+        for (int i = 0; i < frames.length; i++) {
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+              Console.log("[" + i + "] (" + frames[i] + ")");
+        }
+        Console.print("\n");
+    }
+
 }
