@@ -1,6 +1,7 @@
 package software;
 
 import hardware.Word;
+
 import util.Console;
 
 import java.util.LinkedList;
@@ -10,11 +11,12 @@ public class ProcessManager {
     private static ProcessManager INSTANCE;
 
     public MemoryManager mm;
-    public Queue<PCB> pcbList;
     public int processId = 0;
 
+    public Queue<PCB> pcbList;
+
     public ProcessManager() {
-        this.mm = new MemoryManager();
+        this.mm = MemoryManager.get();
         this.pcbList = new LinkedList<>();
     }
 
@@ -66,6 +68,7 @@ public class ProcessManager {
      * @return instância única da ProcessManager.
      */
     public static ProcessManager get() {
+        init();
         return INSTANCE;
     }
 }

@@ -6,10 +6,12 @@ import java.util.Queue;
 
 import util.Console;
 
-public class Escalonador extends Thread {
+public class Escalonador {
     private static Escalonador INSTANCE;
 
     private volatile int counter;
+
+    public Queue<PCB> filaDeProntos;
 
     private Escalonador() {}
 
@@ -49,6 +51,7 @@ public class Escalonador extends Thread {
      * @return instância única do Escalonador.
      */
     public static Escalonador get() {
+        init();
         return INSTANCE;
     }
 }

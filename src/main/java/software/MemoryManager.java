@@ -13,7 +13,7 @@ public class MemoryManager {
     public int frameCount;
     public boolean[] availableFrames;
 
-    public MemoryManager() {
+    private MemoryManager() {
         this.frameSize = 16;
         this.pageSize = 16;
         this.frameCount = this.MEMORY_SIZE / this.pageSize;
@@ -136,6 +136,15 @@ public class MemoryManager {
         Console.print("\n");
     }
 
+    public void dump(int ini, int fim) {
+        Memory m = Memory.get();
+        Console.debug(" > Memory.dump() \n");
+        for (int i = ini; i < fim; i++) {
+            Console.print(i); Console.print(":  ");  dump(m.data[i]);
+        }
+        Console.print("\n");
+    }
+
     public void dump(boolean[] frames) {
         Console.debug(" > Memory.dump(frames) \n");
         for (int i = 0; i < frames.length; i++) {
@@ -149,6 +158,19 @@ public class MemoryManager {
               Console.log("[" + i + "] (" + frames[i] + ")");
         }
         Console.print("\n");
+    }
+
+
+    // Singleton
+    private static MemoryManager INSTANCE;
+
+    public static void init() {
+        if (INSTANCE == null) INSTANCE = new MemoryManager();
+    }
+
+    public static MemoryManager get() {
+        init();
+        return INSTANCE;
     }
 
 }

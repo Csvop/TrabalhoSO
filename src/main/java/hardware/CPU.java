@@ -6,9 +6,11 @@ import java.util.List;
 import util.Console;
 
 import software.MemoryManager;
-
+import software.PCB;
+import software.Status;
 import virtualmachine.Aux;
 import virtualmachine.TrapHandling;
+import virtualmachine.VM;
 
 public class CPU {
     // característica do processador: contexto da CPU ...
@@ -16,9 +18,10 @@ public class CPU {
     public Word ir; // instruction register,
     public int[] reg; // registradores da CPU
     public int currentProcessId;
+    public int count; // instruction count antes de trocar pra outro programa
 
     public Memory m;
-    public MemoryManager mm = new MemoryManager();
+    public MemoryManager mm = MemoryManager.get();
     public List<Integer> paginas;
 
     public Interrupt interrupt;
@@ -29,15 +32,15 @@ public class CPU {
         m = Memory.get(); // usa o atributo 'm' para acessar a memoria.
         reg = new int[10]; // aloca o espaço dos registradores
         interrupt = Interrupt.NONE;
-        currentProcessId = 0;
+        count = 5;
     }
 
     public void setContext(ArrayList<Integer> _paginas, int _pc, int _id, int[] _reg) { // no futuro esta funcao vai ter que ser
-        pc = _pc; // limite e pc (deve ser zero nesta versao)
         paginas = _paginas;
-        interrupt = Interrupt.NONE;
+        pc = _pc; // limite e pc (deve ser zero nesta versao)
         currentProcessId = _id;
         reg = _reg;
+        interrupt = Interrupt.NONE;
     }
 
     public void showState() {
@@ -52,6 +55,8 @@ public class CPU {
         System.out.print("           ");
         aux.dump(ir);
     }
+
+
 
     public void run() { // execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente
                         // setado
@@ -259,6 +264,26 @@ public class CPU {
                     Console.print("\n"); Console.warn(" > Interrupt.OVERFLOW");
                     break;
 
+                case TIMER:
+                    Console.print("\n"); Console.warn(" > Interrupt.TIMER");
+                    // saveCPUstate(currentprogram)
+                    // loadCPUState(anotherprogram)
+
+                    for (PCB p : VM.get().pm.pcbList) {
+                        if (p.id == currentProcessId) {
+                            p.status = Status.READY;
+                            p.pc = pc;
+                            p.reg = reg;
+                            break;
+                        }
+                        Console.log(p);
+                        
+                    }
+
+                    count = 5;
+                    interrupt = Interrupt.NONE;
+                    break;
+
                 case TRAP:
                     TrapHandling.trap(this);
                     interrupt = Interrupt.NONE;
@@ -268,7 +293,13 @@ public class CPU {
                     Console.print("\n"); Console.warn(" > Interrupt.STOP");
                     break;
             }
+        
+            count--;
+            if(count == 0) {
+                interrupt = Interrupt.TIMER;
+            }
         }
+        
     }
 
     
