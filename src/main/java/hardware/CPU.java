@@ -1,6 +1,11 @@
 package hardware;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import util.Console;
+
+import software.MemoryManager;
 
 import virtualmachine.Aux;
 import virtualmachine.TrapHandling;
@@ -11,7 +16,9 @@ public class CPU {
     public Word ir; // instruction register,
     public int[] reg; // registradores da CPU
 
-    public Memory m; // CPU acessa MEMORIA, guarda referencia 'm' a ela. memoria nao muda. ee sempre a mesma.
+    public Memory m;
+    public MemoryManager mm = new MemoryManager();
+    public List<Integer> paginas;
 
     public Interrupt interrupt;
 
@@ -23,8 +30,9 @@ public class CPU {
         interrupt = Interrupt.NONE;
     }
 
-    public void setContext(int _pc) { // no futuro esta funcao vai ter que ser
+    public void setContext(int _pc, ArrayList<Integer> _paginas) { // no futuro esta funcao vai ter que ser
         pc = _pc; // limite e pc (deve ser zero nesta versao)
+        paginas = _paginas;
         interrupt = Interrupt.NONE;
     }
 
@@ -47,7 +55,7 @@ public class CPU {
             int aux = 0;
             // ciclo de instrucoes. acaba cfe instrucao, veja cada caso.
             // FETCH
-            ir = m.data[pc]; // busca posicao da memoria apontada por pc, guarda em ir
+            ir = m.data[translate(pc)]; // busca posicao da memoria apontada por pc, guarda em ir
             // if debug
             showState();
             // EXECUTA INSTRUCAO NO ir
@@ -181,7 +189,7 @@ public class CPU {
 
                 case LDD: // Rd ← [A]
                     try {
-                        reg[ir.r1] = m.data[ir.p].p; // m == memoria
+                        reg[ir.r1] = m.data[translate(ir.p)].p; // m == memoria
                         pc++;
                     } catch (Exception e) {
                         interrupt = Interrupt.INVALID_ADDRESS;
@@ -190,8 +198,8 @@ public class CPU {
 
                 case STD: // [A] ← Rs
                     try {
-                        m.data[ir.p].opc = Opcode.DATA;
-                        m.data[ir.p].p = reg[ir.r1];
+                        m.data[translate(ir.p)].opc = Opcode.DATA;
+                        m.data[translate(ir.p)].p = reg[ir.r1];
                         pc++;
                     } catch (Exception e) {
                         interrupt = Interrupt.INVALID_ADDRESS;
@@ -200,7 +208,7 @@ public class CPU {
 
                 case LDX: // Rd ← [Rs]
                     try {
-                        reg[ir.r1] = m.data[ir.r2].p; // m == memoria
+                        reg[ir.r1] = m.data[translate(ir.r2)].p; // m == memoria
                         pc++;
                     } catch (Exception e) {
                         interrupt = Interrupt.INVALID_ADDRESS;
@@ -209,8 +217,8 @@ public class CPU {
 
                 case STX: // [Rd] ←Rs
                     try {
-                        m.data[reg[ir.r1]].opc = Opcode.DATA;
-                        m.data[reg[ir.r1]].p = reg[ir.r2];
+                        m.data[translate(reg[ir.r1])].opc = Opcode.DATA;
+                        m.data[translate(reg[ir.r1])].p = reg[ir.r2];
                         pc++;
                     } catch (Exception e) {
                         interrupt = Interrupt.INVALID_ADDRESS;
@@ -258,4 +266,32 @@ public class CPU {
             }
         }
     }
+
+    
+    /**
+     * Converte de um endereço lógico em um endereço físico.
+     */
+    private int translate(int pc){
+
+        boolean isValid = true;
+        
+        int pageSize = mm.pageSize;
+        int index = pc / pageSize;
+        int res = 0;
+        
+        try {
+            paginas.get(index);
+        } 
+        catch (Exception e) {
+            interrupt = Interrupt.INVALID_ADDRESS;
+            isValid = false;
+        }
+
+        if(isValid){
+            res = (paginas.get(index) * pageSize) + (pc % pageSize);
+        }
+
+        return res;
+    }
+
 }
