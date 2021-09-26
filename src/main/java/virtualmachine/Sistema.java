@@ -17,7 +17,7 @@ public class Sistema {
 	public VM vm;
 
     public Sistema(){   // a VM com tratamento de interrupções
-		vm = new VM();
+		vm = VM.get();
 	}
 
 	public static void main(String args[]) {
@@ -43,6 +43,7 @@ public class Sistema {
 
 		MemoryManager mm = new MemoryManager();
 		
+		PCB pcb = vm.pm.create(Program.TRAP_IN);
 		ArrayList<Integer> trapInPages = mm.allocate(Program.TRAP_IN);
 		Console.debug(" > Programa TRAP_IN carregado.");
 		mm.dump(Memory.get().data, 0, 40);
@@ -56,7 +57,7 @@ public class Sistema {
 		mm.dump(mm.availableFrames);
 		
 		Console.debug(" > CPU.run() ");
-		vm.cpu.setContext(0, trapInPages);
+		vm.cpu.setContext(trapInPages, 0, vm.cpu.currentProcessId, vm.cpu.reg);
 		vm.cpu.run();
 
 		Console.debug(" > Programa TRAP_IN encerrado.");
@@ -66,7 +67,7 @@ public class Sistema {
 		Console.info("Iniciando trapOutTest()");
 		
 		Console.debug(" > CPU.run() ");
-		vm.cpu.setContext(0, trapOutPages);
+		vm.cpu.setContext(trapOutPages, 0, vm.cpu.currentProcessId, vm.cpu.reg);
 		vm.cpu.run();
 
 		Console.debug(" > Programa TRAP_IN encerrado.");

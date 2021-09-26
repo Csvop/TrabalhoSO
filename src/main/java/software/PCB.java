@@ -1,6 +1,6 @@
 package software;
 
-import virtualmachine.Interrupt;
+import hardware.Interrupt;
 
 import java.util.ArrayList;
 
@@ -35,5 +35,5 @@ public class PCB {
 }
 
 enum Status {
-    READY, BLOCKED, RUNNING
+    READY, BLOCKED, RUNNING, DONE
 }

@@ -15,6 +15,7 @@ public class CPU {
     public int pc; // ... composto de program counter,
     public Word ir; // instruction register,
     public int[] reg; // registradores da CPU
+    public int currentProcessId;
 
     public Memory m;
     public MemoryManager mm = new MemoryManager();
@@ -28,12 +29,15 @@ public class CPU {
         m = Memory.get(); // usa o atributo 'm' para acessar a memoria.
         reg = new int[10]; // aloca o espaço dos registradores
         interrupt = Interrupt.NONE;
+        currentProcessId = 0;
     }
 
-    public void setContext(int _pc, ArrayList<Integer> _paginas) { // no futuro esta funcao vai ter que ser
+    public void setContext(ArrayList<Integer> _paginas, int _pc, int _id, int[] _reg) { // no futuro esta funcao vai ter que ser
         pc = _pc; // limite e pc (deve ser zero nesta versao)
         paginas = _paginas;
         interrupt = Interrupt.NONE;
+        currentProcessId = _id;
+        reg = _reg;
     }
 
     public void showState() {
