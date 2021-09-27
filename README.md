@@ -51,6 +51,8 @@ $ cd ../TrabalhoSO/src/main/java/virtualmachine/
 $ java Sistema.java
 ```
 
+###### Se acontecer erro na hora do clone/checkout, o comando `git config core.protectNTFS false` pode consertar.
+
 Para escolher qual programa executar, remova o comentário referente ao programa desejado. 
 Lembre de deixar apenas um programa não comentado. Mais de um programa não comentado pode gerar erros.
 

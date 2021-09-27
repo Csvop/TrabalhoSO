@@ -8,7 +8,6 @@ import util.Console;
 import software.MemoryManager;
 import software.PCB;
 import software.Status;
-import virtualmachine.Aux;
 import virtualmachine.TrapHandling;
 import virtualmachine.VM;
 
@@ -26,8 +25,6 @@ public class CPU {
 
     public Interrupt interrupt;
 
-    public Aux aux = new Aux();
-
     public CPU() { // ref a MEMORIA e interrupt handler passada na criacao da CPU
         m = Memory.get(); // usa o atributo 'm' para acessar a memoria.
         reg = new int[10]; // aloca o espaço dos registradores
@@ -35,7 +32,8 @@ public class CPU {
         count = 5;
     }
 
-    public void setContext(ArrayList<Integer> _paginas, int _pc, int _id, int[] _reg) { // no futuro esta funcao vai ter que ser
+    public void setContext(ArrayList<Integer> _paginas, int _pc, int _id, int[] _reg) { // no futuro esta funcao vai ter
+                                                                                        // que ser
         paginas = _paginas;
         pc = _pc; // limite e pc (deve ser zero nesta versao)
         currentProcessId = _id;
@@ -53,10 +51,8 @@ public class CPU {
         ;
         System.out.println("");
         System.out.print("           ");
-        aux.dump(ir);
+        mm.dump(ir);
     }
-
-
 
     public void run() { // execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente
                         // setado
@@ -253,19 +249,23 @@ public class CPU {
                     break;
 
                 case INVALID_ADDRESS:
-                    Console.print("\n"); Console.warn(" > Interrupt.INVALID_ADDRESS");
+                    Console.print("\n");
+                    Console.warn(" > Interrupt.INVALID_ADDRESS");
                     break;
 
                 case INVALID_INSTRUCTION:
-                    Console.print("\n"); Console.warn(" > Interrupt.INVALID_INSTRUCTION");
+                    Console.print("\n");
+                    Console.warn(" > Interrupt.INVALID_INSTRUCTION");
                     break;
 
                 case OVERFLOW:
-                    Console.print("\n"); Console.warn(" > Interrupt.OVERFLOW");
+                    Console.print("\n");
+                    Console.warn(" > Interrupt.OVERFLOW");
                     break;
 
                 case TIMER:
-                    Console.print("\n"); Console.warn(" > Interrupt.TIMER");
+                    Console.print("\n");
+                    Console.warn(" > Interrupt.TIMER");
                     // saveCPUstate(currentprogram)
                     // loadCPUState(anotherprogram)
 
@@ -277,7 +277,7 @@ public class CPU {
                             break;
                         }
                         Console.log(p);
-                        
+
                     }
 
                     count = 5;
@@ -290,39 +290,38 @@ public class CPU {
                     break;
 
                 case STOP:
-                    Console.print("\n"); Console.warn(" > Interrupt.STOP");
+                    Console.print("\n");
+                    Console.warn(" > Interrupt.STOP");
                     break;
             }
-        
+
             count--;
-            if(count == 0) {
+            if (count == 0) {
                 interrupt = Interrupt.TIMER;
             }
         }
-        
+
     }
 
-    
     /**
      * Converte de um endereço lógico em um endereço físico.
      */
-    private int translate(int pc){
+    private int translate(int pc) {
 
         boolean isValid = true;
-        
+
         int pageSize = mm.pageSize;
         int index = pc / pageSize;
         int res = 0;
-        
+
         try {
             paginas.get(index);
-        } 
-        catch (Exception e) {
+        } catch (Exception e) {
             interrupt = Interrupt.INVALID_ADDRESS;
             isValid = false;
         }
 
-        if(isValid){
+        if (isValid) {
             res = (paginas.get(index) * pageSize) + (pc % pageSize);
         }
 
