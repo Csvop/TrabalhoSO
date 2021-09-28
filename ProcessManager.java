@@ -1,9 +1,3 @@
-package software;
-
-import hardware.Word;
-
-import util.Console;
-
 import java.util.LinkedList;
 import java.util.Queue;
 

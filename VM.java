@@ -1,11 +1,3 @@
-package virtualmachine;
-
-import hardware.CPU;
-import hardware.Memory;
-import software.MemoryManager;
-import software.ProcessManager;
-import software.Escalonador;
-
 public class VM {
     private static VM INSTANCE;
     public CPU cpu;

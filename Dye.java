@@ -1,5 +1,3 @@
-package util;
-
 public class Dye {
     
     private static String dye(String _color, String _string) {

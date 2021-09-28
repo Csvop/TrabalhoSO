@@ -1,13 +1,5 @@
-package hardware;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import util.Console;
-
-import software.MemoryManager;
-import virtualmachine.TrapHandling;
-
 
 public class CPU {
     // característica do processador: contexto da CPU ...

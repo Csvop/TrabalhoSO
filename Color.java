@@ -1,5 +1,3 @@
-package util;
-
 public class Color {
     public static final String RED     = "[31m";
     public static final String GREEN   = "[32m";

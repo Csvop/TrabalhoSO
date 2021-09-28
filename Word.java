@@ -1,5 +1,3 @@
-package hardware;
-
 public class Word { 	
     public static final Word BLANK = new Word(Opcode.___, -1, -1, -1);
 

@@ -1,10 +1,4 @@
-package virtualmachine;
-
 import java.util.Scanner;
-import util.Console;
-
-import hardware.Opcode;
-import hardware.CPU;
 
 public class TrapHandling {
 

@@ -1,9 +1,3 @@
-package software;
-
-import hardware.Memory;
-import hardware.Word;
-import util.Console;
-
 import java.util.ArrayList;
 
 public class MemoryManager {

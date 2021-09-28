@@ -1,37 +1,46 @@
-package virtualmachine;
+public class Program {
 
-import hardware.Opcode;
-import hardware.Word;
-
-public class Programas {
-    public Word[] progIN = new Word[] {
-        // OPCODE R1 R2 P :: VEJA AS COLUNAS VERMELHAS DA TABELA DE DEFINICAO DE
-        // OPERACOES
-        // :: -1 SIGNIFICA QUE O PARAMETRO NAO EXISTE PARA A OPERACAO DEFINIDA
-        new Word(Opcode.LDI, 8, -1, 1), new Word(Opcode.LDI, 9, -1, 10), new Word(Opcode.TRAP, -1, -1, -1),
-        new Word(Opcode.STOP, -1, -1, -1) };
-
-    public Word[] progOUT = new Word[] {
-        // OPCODE R1 R2 P :: VEJA AS COLUNAS VERMELHAS DA TABELA DE DEFINICAO DE
-        // OPERACOES
-        // :: -1 SIGNIFICA QUE O PARAMETRO NAO EXISTE PARA A OPERACAO DEFINIDA
-        new Word(Opcode.LDI, 0, -1, 999), new Word(Opcode.STD, 0, -1, 10), new Word(Opcode.LDI, 8, -1, 2),
-        new Word(Opcode.LDI, 9, -1, 10), new Word(Opcode.TRAP, -1, -1, -1), new Word(Opcode.STOP, -1, -1, -1) };
-
-    public Word[] fibonacci10 = new Word[] { // mesmo que prog exemplo, so que usa r0 no lugar de r8
-
-        new Word(Opcode.LDI, 4, -1, 10), // Numero de numeros na sequencia !!é um INDEX!!
-        new Word(Opcode.LDI, 1, -1, 0), new Word(Opcode.STD, 1, -1, 20), // 20 posicao de memoria onde inicia a
-                                                                            // serie de fibonacci gerada
-        new Word(Opcode.LDI, 2, -1, 1), new Word(Opcode.STD, 2, -1, 21), new Word(Opcode.LDI, 0, -1, 22),
-        new Word(Opcode.LDI, 6, -1, 6), new Word(Opcode.LDI, 7, -1, 20), // final da escala
-        new Word(Opcode.ADD, 7, 4, -1), new Word(Opcode.LDI, 3, -1, 0), new Word(Opcode.ADD, 3, 1, -1),
-        new Word(Opcode.LDI, 1, -1, 0), new Word(Opcode.ADD, 1, 2, -1), new Word(Opcode.ADD, 2, 3, -1),
-        new Word(Opcode.STX, 0, 2, -1), new Word(Opcode.ADDI, 0, -1, 1), new Word(Opcode.SUB, 7, 0, -1),
-        new Word(Opcode.JMPIG, 6, 7, -1), new Word(Opcode.STOP, -1, -1, -1), // POS 16
+    public static final Word[] TRAP_IN = new Word[] {
+        new Word(Opcode.LDI, 8, -1, 1), 
+        new Word(Opcode.LDI, 9, -1, 10), 
+        new Word(Opcode.TRAP, -1, -1, -1),
+        new Word(Opcode.STOP, -1, -1, -1) 
     };
 
-    public Word[] fatorial = new Word[] { // este fatorial so aceita valores positivos. nao pode ser zero
+    public static final Word[] TRAP_OUT = new Word[] {
+        new Word(Opcode.LDI, 0, -1, 999), 
+        new Word(Opcode.STD, 0, -1, 10), 
+        new Word(Opcode.LDI, 8, -1, 2),
+        new Word(Opcode.LDI, 9, -1, 10), 
+        new Word(Opcode.TRAP, -1, -1, -1), 
+        new Word(Opcode.STOP, -1, -1, -1) 
+    };
+
+    public static final Word[] FIBONACCI_10 = new Word[] { // mesmo que prog exemplo, so que usa r0 no lugar de r8
+
+        new Word(Opcode.LDI, 4, -1, 10), // Numero de numeros na sequencia !!é um INDEX!!
+        new Word(Opcode.LDI, 1, -1, 0), 
+        new Word(Opcode.STD, 1, -1, 20), // 20 posicao de memoria onde inicia a
+                                         // serie de fibonacci gerada
+        new Word(Opcode.LDI, 2, -1, 1), 
+        new Word(Opcode.STD, 2, -1, 21), 
+        new Word(Opcode.LDI, 0, -1, 22),
+        new Word(Opcode.LDI, 6, -1, 6), 
+        new Word(Opcode.LDI, 7, -1, 20), // final da escala
+        new Word(Opcode.ADD, 7, 4, -1), 
+        new Word(Opcode.LDI, 3, -1, 0), 
+        new Word(Opcode.ADD, 3, 1, -1),
+        new Word(Opcode.LDI, 1, -1, 0), 
+        new Word(Opcode.ADD, 1, 2, -1), 
+        new Word(Opcode.ADD, 2, 3, -1),
+        new Word(Opcode.STX, 0, 2, -1), 
+        new Word(Opcode.ADDI, 0, -1, 1), 
+        new Word(Opcode.SUB, 7, 0, -1),
+        new Word(Opcode.JMPIG, 6, 7, -1), 
+        new Word(Opcode.STOP, -1, -1, -1), // POS 16
+    };
+
+    public static final Word[] FATORIAL = new Word[] { // este fatorial so aceita valores positivos. nao pode ser zero
                                           // linha coment
         new Word(Opcode.LDI, 0, -1, 6), // 0 r0 é valor a calcular fatorial
         new Word(Opcode.LDI, 1, -1, 1), // 1 r1 é 1 para multiplicar (por r0)
@@ -43,9 +52,10 @@ public class Programas {
         new Word(Opcode.JMP, -1, -1, 4), // 7 vai p posicao 4
         new Word(Opcode.STD, 1, -1, 10), // 8 coloca valor de r1 na posição 10
         new Word(Opcode.STOP, -1, -1, -1), // 9 stop
-        new Word(Opcode.DATA, -1, -1, -1) }; // 10 ao final o valor do fatorial estará na posição 10 da memória
+        new Word(Opcode.DATA, -1, -1, -1) 
+    }; // 10 ao final o valor do fatorial estará na posição 10 da memória
 
-    public Word[] PA = new Word[] { // mesmo que prog exemplo, so que usa r0 no lugar de r8
+    public static final Word[] PA = new Word[] { // mesmo que prog exemplo, so que usa r0 no lugar de r8
         new Word(Opcode.LDI, 4, -1, 10), // 0 Numero de numeros na sequencia !!é um INDEX!!
         new Word(Opcode.LDI, 1, -1, 20), // 1
         new Word(Opcode.JMPIL, 1, 4, -1), // 2
@@ -69,7 +79,7 @@ public class Programas {
         new Word(Opcode.STOP, -1, -1, -1),// 20
     }; // ate aqui - serie de fibonacci ficara armazenada
 
-    public Word[] PB = new Word[] { 
+    public static final Word[] PB = new Word[] { 
         new Word(Opcode.LDI, 0, -1, 6), // 0 - r0 é valor a calcular fatorial
         new Word(Opcode.LDI, 1, -1, 12), // 1
         new Word(Opcode.JMPIL, 1, 0, -1), // 2 -IF(R0 < 0) -> posicao 6
@@ -86,7 +96,7 @@ public class Programas {
         new Word(Opcode.STOP, -1, -1, -1),// 13
     };
 
-    public Word[] PC = new Word[] { 
+    public static final Word[] PC = new Word[] { 
         new Word(Opcode.LDI, 0, -1, 7), // carregando valores do array na memoria
         new Word(Opcode.STD, 0, -1, 40),
         new Word(Opcode.LDI, 0, -1, 12), new Word(Opcode.STD, 0, -1, 41),

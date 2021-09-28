@@ -1,5 +1,3 @@
-package util;
-
 public class Emoji {
     public static final String LIGHT_BULB               = "\ud83d\uDCA1 ";  // 💡
     public static final String BEETLE                   = "\uD83D\uDC1E ";  // 🐞

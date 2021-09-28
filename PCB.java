@@ -1,6 +1,3 @@
-package software;
-
-import hardware.Word;
 import java.util.ArrayList;
 
 

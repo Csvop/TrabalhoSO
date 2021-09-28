@@ -1,10 +1,4 @@
-package software;
-
-import virtualmachine.VM;
-
 import java.util.Queue;
-
-import util.Console;
 
 public class Escalonador {
     private static Escalonador INSTANCE;

@@ -1,7 +1,3 @@
-package hardware;
-
-import util.Console;
-
 public class Memory {
 
     public int size;
