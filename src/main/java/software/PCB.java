@@ -1,8 +1,8 @@
 package software;
 
-import hardware.Interrupt;
-
+import hardware.Word;
 import java.util.ArrayList;
+
 
 public class PCB {
     public int id;
@@ -11,16 +11,14 @@ public class PCB {
     // CPU context
     public int pc;
     public int[] reg;
-    public Status status;
-    public Interrupt interrupt;
+    public Word ir;
 
     public PCB(int id, ArrayList<Integer> allocatedPages) {
-        this.allocatedPages = allocatedPages;
         this.id = id;
-        this.pc = 0;
-        this.status = Status.READY;
+        this.allocatedPages = allocatedPages;
         this.reg = new int[10];
-        this.interrupt = Interrupt.NONE;
+        this.pc = 0;
+        this.ir = Word.BLANK;
     }
 
     //retorna a lista de paginas de um processo
