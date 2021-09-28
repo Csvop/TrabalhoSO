@@ -6,37 +6,54 @@ import java.util.List;
 import util.Console;
 
 import software.MemoryManager;
-import software.PCB;
-import software.Status;
 import virtualmachine.TrapHandling;
-import virtualmachine.VM;
+
 
 public class CPU {
     // característica do processador: contexto da CPU ...
     public int pc; // ... composto de program counter,
     public Word ir; // instruction register,
     public int[] reg; // registradores da CPU
-    public int currentProcessId;
-    public int count; // instruction count antes de trocar pra outro programa
-
     public Memory m;
     public MemoryManager mm = MemoryManager.get();
-    public List<Integer> paginas;
-
+    public List<Integer> paginas; //Paginas Alocadas
     public Interrupt interrupt;
+    public int timer; //conta instrucoes
 
     public CPU() { // ref a MEMORIA e interrupt handler passada na criacao da CPU
         m = Memory.get(); // usa o atributo 'm' para acessar a memoria.
         reg = new int[10]; // aloca o espaço dos registradores
-        interrupt = Interrupt.NONE;
-        count = 5;
+    }
+
+/**
+     * Converte de um endereço lógico em um endereço físico.
+     */
+    private int translate(int pc) {
+
+        boolean isValid = true;
+
+        int pageSize = mm.pageSize;
+        int index = pc / pageSize;
+        int res = 0;
+
+        try {
+            paginas.get(index);
+        } catch (Exception e) {
+            interrupt = Interrupt.INVALID_ADDRESS;
+            isValid = false;
+        }
+
+        if (isValid) {
+            res = (paginas.get(index) * pageSize) + (pc % pageSize);
+        }
+
+        return res;
     }
 
     public void setContext(ArrayList<Integer> _paginas, int _pc, int _id, int[] _reg) { // no futuro esta funcao vai ter
                                                                                         // que ser
         paginas = _paginas;
         pc = _pc; // limite e pc (deve ser zero nesta versao)
-        currentProcessId = _id;
         reg = _reg;
         interrupt = Interrupt.NONE;
     }
@@ -54,8 +71,9 @@ public class CPU {
         mm.dump(ir);
     }
 
-    public void run() { // execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente
-                        // setado
+    public void run() { // execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente setado
+
+        timer = 0;
         while (interrupt == Interrupt.NONE) {
             int aux = 0;
             // ciclo de instrucoes. acaba cfe instrucao, veja cada caso.
@@ -64,6 +82,12 @@ public class CPU {
             // if debug
             showState();
             // EXECUTA INSTRUCAO NO ir
+
+            timer++;
+            if(timer >= 5) {
+                interrupt = Interrupt.TIMER;
+            }
+
             switch (ir.opc) { // para cada opcode, sua execução
 
                 // Instruções JUMP
@@ -244,8 +268,10 @@ public class CPU {
                     break;
             }
 
-            switch (interrupt) {
-                case NONE:
+            if (interrupt != Interrupt.NONE) {
+				System.out.print("v Interrupção v");
+				switch (interrupt){
+					case NONE:
                     break;
 
                 case INVALID_ADDRESS:
@@ -266,22 +292,6 @@ public class CPU {
                 case TIMER:
                     Console.print("\n");
                     Console.warn(" > Interrupt.TIMER");
-                    // saveCPUstate(currentprogram)
-                    // loadCPUState(anotherprogram)
-
-                    for (PCB p : VM.get().pm.pcbList) {
-                        if (p.id == currentProcessId) {
-                            p.status = Status.READY;
-                            p.pc = pc;
-                            p.reg = reg;
-                            break;
-                        }
-                        Console.log(p);
-
-                    }
-
-                    count = 5;
-                    interrupt = Interrupt.NONE;
                     break;
 
                 case TRAP:
@@ -293,39 +303,8 @@ public class CPU {
                     Console.print("\n");
                     Console.warn(" > Interrupt.STOP");
                     break;
-            }
-
-            count--;
-            if (count == 0) {
-                interrupt = Interrupt.TIMER;
-            }
+				}
+			}
         }
-
     }
-
-    /**
-     * Converte de um endereço lógico em um endereço físico.
-     */
-    private int translate(int pc) {
-
-        boolean isValid = true;
-
-        int pageSize = mm.pageSize;
-        int index = pc / pageSize;
-        int res = 0;
-
-        try {
-            paginas.get(index);
-        } catch (Exception e) {
-            interrupt = Interrupt.INVALID_ADDRESS;
-            isValid = false;
-        }
-
-        if (isValid) {
-            res = (paginas.get(index) * pageSize) + (pc % pageSize);
-        }
-
-        return res;
-    }
-
 }
