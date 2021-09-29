@@ -3,9 +3,9 @@ public class App {
 		VM vm = new VM();
 
 		//Cria processos na memória e coloca na fila de prontos
+		vm.load(Program.TRAP_OUT);
 		vm.load(Program.PA);
 		vm.load(Program.PB);
-		vm.load(Program.PC);
 
 		//vm.dump(0, 100);
 

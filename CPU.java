@@ -246,7 +246,7 @@ public class CPU {
             }
 
             if (interrupt != Interrupt.NONE) {
-				System.out.print("v Interrupção v");
+				Console.log("v Interrupção v");
 				switch (interrupt){
                     case INVALID_ADDRESS:
                         Console.print("\n");

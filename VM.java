@@ -28,12 +28,12 @@ public class VM {
 	}
 
     public void load(Word[] program) {
-        pm.build(program);
+        pm.createProcess(program);
     }
 
 	public void dump(int ini, int fim) {
 		for (int i = ini; i < fim; i++) {
-			System.out.println(i + ": " + mem[i]);
+			Console.log(i + ": " + mem[i]);
 		}
 	}
 
@@ -50,10 +50,7 @@ public class VM {
     }
 
     public void run() {
-        while(true) {
-            if(readyQueue.isEmpty()) {
-                return;
-            }
+        while(!readyQueue.isEmpty()) {
 
             PCB process = scheduler.schedule();
 
@@ -62,6 +59,8 @@ public class VM {
             System.out.println(interrupt.toString());
 
             switch(interrupt) {
+                case NONE:
+                    break;
                 case INVALID_ADDRESS:
                     routine.stop(process);
                     break;
@@ -77,7 +76,8 @@ public class VM {
                     break;
                 case TIMER:
                     //tenho que tirar da fila
-                    readyQueue.add(process);
+                    readyQueue.addLast(process);
+                    readyQueue.forEach((e) -> Console.log(e));
                     break;
                 case TRAP:
                     routine.stop(process);
