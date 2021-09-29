@@ -6,15 +6,17 @@ public class CPU {
     public int pc; // ... composto de program counter,
     public Word ir; // instruction register,
     public int[] reg; // registradores da CPU
-    public Memory m;
+    public Word[] memory;
     public MemoryManager mm;
     public List<Integer> paginas; //Paginas Alocadas
     public Interrupt interrupt;
     public int timer; //conta instrucoes
 
-    public CPU() { // ref a MEMORIA e interrupt handler passada na criacao da CPU
-        m = Memory.get(); // usa o atributo 'm' para acessar a memoria.
+
+    public CPU(Word[] memory, MemoryManager mm) { // ref a MEMORIA e interrupt handler passada na criacao da CPU
+        this.memory = memory; // usa o atributo 'm' para acessar a memoria.
         reg = new int[10]; // aloca o espaço dos registradores
+        this.mm = mm;
     }
 
 /**
@@ -50,17 +52,14 @@ public class CPU {
         interrupt = Interrupt.NONE;
     }
 
-    public void run() { // execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente setado
+    public Interrupt run() { // execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente setado
 
         timer = 0;
         while (interrupt == Interrupt.NONE) {
+            ir = memory[translate(pc)]; // busca posicao da memoria apontada por pc, guarda em ir
+            
             int aux = 0;
-            // ciclo de instrucoes. acaba cfe instrucao, veja cada caso.
-            // FETCH
-            ir = m.data[translate(pc)]; // busca posicao da memoria apontada por pc, guarda em ir
-            // if debug
-            // EXECUTA INSTRUCAO NO ir
-
+             
             timer++;
             if(timer >= 5) {
                 interrupt = Interrupt.TIMER;
@@ -196,7 +195,7 @@ public class CPU {
 
                 case LDD: // Rd ← [A]
                     try {
-                        reg[ir.r1] = m.data[translate(ir.p)].p; // m == memoria
+                        reg[ir.r1] = memory[translate(ir.p)].p; // m == memoria
                         pc++;
                     } catch (Exception e) {
                         interrupt = Interrupt.INVALID_ADDRESS;
@@ -205,8 +204,8 @@ public class CPU {
 
                 case STD: // [A] ← Rs
                     try {
-                        m.data[translate(ir.p)].opc = Opcode.DATA;
-                        m.data[translate(ir.p)].p = reg[ir.r1];
+                        memory[translate(ir.p)].opc = Opcode.DATA;
+                        memory[translate(ir.p)].p = reg[ir.r1];
                         pc++;
                     } catch (Exception e) {
                         interrupt = Interrupt.INVALID_ADDRESS;
@@ -215,7 +214,7 @@ public class CPU {
 
                 case LDX: // Rd ← [Rs]
                     try {
-                        reg[ir.r1] = m.data[translate(ir.r2)].p; // m == memoria
+                        reg[ir.r1] = memory[translate(ir.r2)].p; // m == memoria
                         pc++;
                     } catch (Exception e) {
                         interrupt = Interrupt.INVALID_ADDRESS;
@@ -224,8 +223,8 @@ public class CPU {
 
                 case STX: // [Rd] ←Rs
                     try {
-                        m.data[translate(reg[ir.r1])].opc = Opcode.DATA;
-                        m.data[translate(reg[ir.r1])].p = reg[ir.r2];
+                        memory[translate(reg[ir.r1])].opc = Opcode.DATA;
+                        memory[translate(reg[ir.r1])].p = reg[ir.r2];
                         pc++;
                     } catch (Exception e) {
                         interrupt = Interrupt.INVALID_ADDRESS;
@@ -249,42 +248,44 @@ public class CPU {
             if (interrupt != Interrupt.NONE) {
 				System.out.print("v Interrupção v");
 				switch (interrupt){
-					case NONE:
-                    break;
+                    case INVALID_ADDRESS:
+                        Console.print("\n");
+                        Console.warn(" > Interrupt.INVALID_ADDRESS");
+                        return interrupt;
 
-                case INVALID_ADDRESS:
-                    Console.print("\n");
-                    Console.warn(" > Interrupt.INVALID_ADDRESS");
-                    break;
+                    case INVALID_INSTRUCTION:
+                        Console.print("\n");
+                        Console.warn(" > Interrupt.INVALID_INSTRUCTION");
+                        return interrupt;
 
-                case INVALID_INSTRUCTION:
-                    Console.print("\n");
-                    Console.warn(" > Interrupt.INVALID_INSTRUCTION");
-                    break;
+                    case OVERFLOW:
+                        Console.print("\n");
+                        Console.warn(" > Interrupt.OVERFLOW");
+                        return interrupt;
 
-                case OVERFLOW:
-                    Console.print("\n");
-                    Console.warn(" > Interrupt.OVERFLOW");
-                    break;
+                    case TIMER:
+                        Console.print("\n");
+                        Console.warn(" > Interrupt.TIMER");
+                        return interrupt;
 
-                case TIMER:
-                    Console.print("\n");
-                    Console.warn(" > Interrupt.TIMER");
-                    break;
+                    case TRAP:
+                        TrapHandling.trap(this);
+                        interrupt = Interrupt.NONE;
+                        return interrupt;
 
-                case TRAP:
-                    TrapHandling.trap(this);
-                    interrupt = Interrupt.NONE;
-                    break;
+                    case STOP:
+                        Console.print("\n");
+                        Console.warn(" > Interrupt.STOP");
+                        return interrupt;
 
-                case STOP:
-                    Console.print("\n");
-                    Console.warn(" > Interrupt.STOP");
-                    VM vm = new VM();
-                    vm.dump(0, 180);
-                    break;
-				}
+                    case NONE:
+                        break;
+                        
+                    default:
+                        break;
+                }
 			}
         }
+        return null;
     }
 }

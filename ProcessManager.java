@@ -1,12 +1,12 @@
 import java.util.ArrayList;
-import java.util.Queue;
+import java.util.LinkedList;
 
 public class ProcessManager {
     public MemoryManager mm;
-    public Queue<PCB> readyQueue;
+    public LinkedList<PCB> readyQueue;
     private static int id = 0;
 
-    public ProcessManager(MemoryManager mm, Queue<PCB> readyQueue) {
+    public ProcessManager(MemoryManager mm, LinkedList<PCB> readyQueue) {
         this.mm = mm;
         this.readyQueue = readyQueue;
     }
@@ -16,6 +16,8 @@ public class ProcessManager {
         PCB process = new PCB(id, pagesAllocated);
         id++;
         readyQueue.add(process);
+        //readyQueue.forEach((e) -> System.out.println(e));
+
     }
 
     public void endProcess(PCB processo) {

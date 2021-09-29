@@ -18,4 +18,8 @@ public class Word {
 		return word;
 	}
 
+    @Override
+    public String toString() {
+        return "[" + opc + ", " + r1 + ", " + r2 + ", " + p + "]";
+    }
 }

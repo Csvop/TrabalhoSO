@@ -1,5 +1,4 @@
 import java.util.LinkedList;
-import java.util.Queue;
 
 public class VM {
     //Hardwares
@@ -11,13 +10,12 @@ public class VM {
     public MemoryManager mm;
     public ProcessManager pm;
     public Scheduler scheduler;
-    public Queue<PCB> readyQueue;
+    public LinkedList<PCB> readyQueue;
     public Routine routine;
 
     public VM(){
 		//Hardware
-        blankMemory(1024);
-		cpu = new CPU();
+        mem = blankMemory(1024);
 
         //Software
         readyQueue = new LinkedList<PCB>();
@@ -25,6 +23,8 @@ public class VM {
         mm = new MemoryManager(this.mem);
         pm = new ProcessManager(mm, readyQueue);
         this.routine = new Routine(pm, scheduler);
+
+        cpu = new CPU(mem, mm);
 	}
 
     public void load(Word[] program) {
@@ -40,13 +40,13 @@ public class VM {
     public Word[] blankMemory(int tamMem) {
 		mem = new Word[tamMem];
 		for (int i=0; i<tamMem; i++)
-			mem[i] = Word.BLANK;
+			mem[i] = Word.copy(Word.BLANK);
         return mem;
     }
 
-    private void runCPU(PCB pcb) {
+    private Interrupt runCPU(PCB pcb) {
         cpu.setContext(pcb.getAllocatedPages(), pcb.pc, pcb.id, pcb.reg);
-        cpu.run();
+        return cpu.run();
     }
 
     public void run() {
@@ -56,7 +56,33 @@ public class VM {
             }
 
             PCB process = scheduler.schedule();
-            runCPU(process);
+
+            Interrupt interrupt = runCPU(process);
+
+            System.out.println(interrupt.toString());
+
+            switch(interrupt) {
+                case INVALID_ADDRESS:
+                    routine.stop(process);
+                    break;
+                case INVALID_INSTRUCTION:
+                    routine.stop(process);
+                    break;
+                case OVERFLOW:
+                    routine.stop(process);
+                    break;
+                case STOP:
+                    dump(0, 100);
+                    routine.stop(process);
+                    break;
+                case TIMER:
+                    //tenho que tirar da fila
+                    readyQueue.add(process);
+                    break;
+                case TRAP:
+                    routine.stop(process);
+                    break;
+            }
         }
     }
 }

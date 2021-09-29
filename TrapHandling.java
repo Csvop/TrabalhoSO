@@ -16,11 +16,11 @@ public class TrapHandling {
                 // Converte o input para um valor inteiro
                 int value = Integer.parseInt(input);
 
-                cpu.m.data[cpu.reg[9]].opc = Opcode.DATA;
-                cpu.m.data[cpu.reg[9]].p = value;
+                cpu.memory[cpu.reg[9]].opc = Opcode.DATA;
+                cpu.memory[cpu.reg[9]].p = value;
 
                 Console.info(
-                    "O valor " + cpu.m.data[cpu.reg[9]].p + 
+                    "O valor " + cpu.memory[cpu.reg[9]].p + 
                     " foi armazenado na posição [" + cpu.reg[9] + "] da memória."
                 );
                 break;
@@ -28,7 +28,7 @@ public class TrapHandling {
             case 2:
                 Console.info(
                     "O valor armazenado na posição [" + cpu.reg[9] + 
-                    "] da memória é " + cpu.m.data[cpu.reg[9]].p
+                    "] da memória é " + cpu.memory[cpu.reg[9]].p
                 );
                 break;
         }
