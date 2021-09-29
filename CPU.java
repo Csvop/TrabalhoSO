@@ -7,7 +7,7 @@ public class CPU {
     public Word ir; // instruction register,
     public int[] reg; // registradores da CPU
     public Memory m;
-    public MemoryManager mm = MemoryManager.get();
+    public MemoryManager mm;
     public List<Integer> paginas; //Paginas Alocadas
     public Interrupt interrupt;
     public int timer; //conta instrucoes
@@ -50,19 +50,6 @@ public class CPU {
         interrupt = Interrupt.NONE;
     }
 
-    public void showState() {
-        System.out.println("       " + pc);
-        System.out.print("           ");
-        for (int i = 0; i < 8; i++) {
-            System.out.print("r" + i);
-            System.out.print(": " + reg[i] + "     ");
-        }
-        ;
-        System.out.println("");
-        System.out.print("           ");
-        mm.dump(ir);
-    }
-
     public void run() { // execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente setado
 
         timer = 0;
@@ -72,7 +59,6 @@ public class CPU {
             // FETCH
             ir = m.data[translate(pc)]; // busca posicao da memoria apontada por pc, guarda em ir
             // if debug
-            showState();
             // EXECUTA INSTRUCAO NO ir
 
             timer++;
@@ -294,6 +280,8 @@ public class CPU {
                 case STOP:
                     Console.print("\n");
                     Console.warn(" > Interrupt.STOP");
+                    VM vm = new VM();
+                    vm.dump(0, 180);
                     break;
 				}
 			}
