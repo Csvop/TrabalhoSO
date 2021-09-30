@@ -13,9 +13,16 @@ public class ProcessManager {
 
     public void createProcess(Word[] program) {
         ArrayList<Integer> allocatedPages = mm.allocate(program);
+
+        if(allocatedPages == null) {
+            Console.error(" Não foi possível alocar o programa na memória " + program.toString());
+            return;
+        }
+
         PCB newProcess = new PCB(newProcessId, allocatedPages);
         newProcessId++;
         readyQueue.addLast(newProcess);
+        
         //readyQueue.forEach((e) -> System.out.println(e));
     }
 
