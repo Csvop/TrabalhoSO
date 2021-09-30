@@ -2,9 +2,9 @@ public class App {
     public static void main(String[] args) {
 		VM vm = new VM();
 
+		vm.mm.availableFrames[1] = false;
+
 		//Cria processos na memória e coloca na fila de prontos
-		vm.load(Program.PA);
-		vm.load(Program.PB);
 		vm.load(Program.PA);
 		vm.load(Program.PB);
 
