@@ -76,6 +76,9 @@ public class VM {
                     break;
                 case TIMER:
                     //tenho que tirar da fila
+                    process.allocatedPages = cpu.paginas;
+                    process.pc = cpu.pc;
+                    process.reg = cpu.reg;
                     readyQueue.addLast(process);
                     readyQueue.forEach((e) -> Console.log(e));
                     break;

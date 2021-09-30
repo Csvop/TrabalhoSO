@@ -3,16 +3,18 @@ public class App {
 		VM vm = new VM();
 
 		//Cria processos na memória e coloca na fila de prontos
-		vm.load(Program.TRAP_OUT);
+		vm.load(Program.PA);
+		vm.load(Program.PB);
 		vm.load(Program.PA);
 		vm.load(Program.PB);
 
-		//vm.dump(0, 100);
+		Console.log("\n\n\n All Programas loaded DUMP");
+		vm.dump(0, 100);
 
 		//manda rodar a maquina com os programas carregados
 		vm.run();
 
-		System.out.println("\n\n\n FINAL DUMP");
-		//vm.dump(0, 100);
+		Console.log("\n\n\n FINAL DUMP");
+		vm.dump(0, 100);
 	}
 }

@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.List;
 
 public class CPU {
     // característica do processador: contexto da CPU ...
@@ -8,7 +7,7 @@ public class CPU {
     public int[] reg; // registradores da CPU
     public Word[] memory;
     public MemoryManager mm;
-    public List<Integer> paginas; //Paginas Alocadas
+    public ArrayList<Integer> paginas; //Paginas Alocadas
     public Interrupt interrupt;
     public int timer; //conta instrucoes
 
