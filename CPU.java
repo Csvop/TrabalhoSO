@@ -42,12 +42,15 @@ public class CPU {
 
         return res;
     }
+    
+    public Context getContext() {
+        return new Context(paginas, reg, pc, ir);
+    }
 
-    public void setContext(ArrayList<Integer> _paginas, int _pc, int _id, int[] _reg) { // no futuro esta funcao vai ter
-                                                                                        // que ser
-        paginas = _paginas;
-        pc = _pc; // limite e pc (deve ser zero nesta versao)
-        reg = _reg;
+    public void setContext(Context context) { 
+        paginas = context.getAllocatedPages();
+        pc = context.getPc();
+        reg = context.getReg();
         interrupt = Interrupt.NONE;
     }
 

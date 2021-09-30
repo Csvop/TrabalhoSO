@@ -45,7 +45,7 @@ public class VM {
     }
 
     private Interrupt runCPU(PCB pcb) {
-        cpu.setContext(pcb.getAllocatedPages(), pcb.pc, pcb.id, pcb.reg);
+        cpu.setContext(pcb.getContext());
         return cpu.run();
     }
 
@@ -76,9 +76,7 @@ public class VM {
                     break;
                 case TIMER:
                     //tenho que tirar da fila
-                    process.allocatedPages = cpu.paginas;
-                    process.pc = cpu.pc;
-                    process.reg = cpu.reg;
+                    process.setContext(cpu.getContext());
                     readyQueue.addLast(process);
                     readyQueue.forEach((e) -> Console.log(e));
                     break;

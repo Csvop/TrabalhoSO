@@ -10,12 +10,12 @@ public class PCB {
     public int[] reg;
     public Word ir;
 
+    private Context context;
+
     public PCB(int id, ArrayList<Integer> allocatedPages) {
         this.id = id;
         this.allocatedPages = allocatedPages;
-        this.reg = new int[10];
-        this.pc = 0;
-        this.ir = Word.BLANK;
+        this.context = new Context(allocatedPages, new int[10], 0, Word.copy(Word.BLANK));
     }
 
     //retorna a lista de paginas de um processo
@@ -27,4 +27,11 @@ public class PCB {
         return this.id;
     }
 
+    public Context getContext() {
+        return context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
 }
