@@ -79,7 +79,7 @@ public class CPU {
                     break;
 
                 case JMPI: // PC ← Rs
-                    pc = ir.r1;
+                    pc = reg[ir.r1];
                     break;
 
                 case JMPIG: // If Rc > 0 Then PC ← Rs Else PC ← PC +1
@@ -107,12 +107,12 @@ public class CPU {
                     break;
 
                 case JMPIM: // PC ← [A]
-                    pc = ir.p;
+                    pc = memory[translate(ir.p)].p;
                     break;
 
                 case JMPIGM: // If Rc > 0 Then PC ← [A] Else PC ← PC +1
                     if (reg[ir.r2] > 0) {
-                        pc = reg[ir.p];
+                        pc = memory[translate(ir.p)].p;
                     } else {
                         pc++;
                     }
@@ -120,7 +120,7 @@ public class CPU {
 
                 case JMPILM: // If Rc < 0 Then PC ← [A] Else PC ← PC +1
                     if (reg[ir.r2] < 0) {
-                        pc = reg[ir.p];
+                        pc = memory[translate(ir.p)].p;
                     } else {
                         pc++;
                     }
@@ -128,7 +128,7 @@ public class CPU {
 
                 case JMPIEM: // If Rc = 0 Then PC ← [A] Else PC ← PC +1
                     if (reg[ir.r2] == 0) {
-                        pc = reg[ir.p];
+                        pc = memory[translate(ir.p)].p;
                     } else {
                         pc++;
                     }
@@ -216,7 +216,7 @@ public class CPU {
 
                 case LDX: // Rd ← [Rs]
                     try {
-                        reg[ir.r1] = memory[translate(ir.r2)].p; // m == memoria
+                        reg[ir.r1] = memory[translate(reg[ir.r2])].p; // m == memoria
                         pc++;
                     } catch (Exception e) {
                         interrupt = Interrupt.INVALID_ADDRESS;

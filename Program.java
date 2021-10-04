@@ -97,48 +97,56 @@ public class Program {
     };
 
     public static final Word[] PC = new Word[] { 
-        new Word(Opcode.LDI, 0, -1, 7), // carregando valores do array na memoria
-        new Word(Opcode.STD, 0, -1, 40),
-        new Word(Opcode.LDI, 0, -1, 12), new Word(Opcode.STD, 0, -1, 41),
-        new Word(Opcode.LDI, 0, -1, 15), new Word(Opcode.STD, 0, -1, 42),
-        new Word(Opcode.LDI, 0, -1, 9), new Word(Opcode.STD, 0, -1, 43),
-        new Word(Opcode.LDI, 0, -1, 32), new Word(Opcode.STD, 0, -1, 44),
-        new Word(Opcode.LDI, 0, -1, 2), new Word(Opcode.STD, 0, -1, 45),
-        new Word(Opcode.LDI, 0, -1, -5), new Word(Opcode.STD, 0, -1, 46), // fim do array
+        new Word(Opcode.LDI, 0, -1, 12),  //carregando valor na memoria
+		new Word(Opcode.STD, 0, -1, 40),
 
-        new Word(Opcode.LDI, 0, -1, 40), // guardando no registrador 0 o valor 40
-        new Word(Opcode.LDI, 3, -1, 6), // guardando no registrador 3 o valor 7
-        new Word(Opcode.LDI, 4, -1, 6), // guardando no registrador 4 o valor 6
-        new Word(Opcode.LDI, 5, -1, 20), // guardando no registrador 5 o valor 20
-        new Word(Opcode.LDI, 6, -1, 33), // guardando no registrador 6 o valor 33
-        new Word(Opcode.LDI, 7, -1, 38), // guardando no registrador 7 o valor 38
+		new Word(Opcode.LDI, 0, -1, 20),
+		new Word(Opcode.STD, 0, -1, 41),
 
-        new Word(Opcode.JMPIE, 6, 3, -1), // inicio loop - verifica se o valor do registrador 3 é zero, se sim vai
-                                            // para a posição do registrador 6
-        new Word(Opcode.SUBI, 3, -1, 1), // se o registrador 3 não é zero, armazena no registrador 3 o valor de r3-1
-        new Word(Opcode.LDX, 1, 0, -1), // armazena no registrador 1 o valor da memória indicado pelo registrador 0
-        new Word(Opcode.ADDI, 0, -1, 1), // acrescenta 1 no registrador 0
-        new Word(Opcode.LDX, 2, 0, -1), // armazena no registrador 2 o valor da memória indicado pelo registrador 0
-        new Word(Opcode.SUB, 2, 1, -1), // subtrai do registrador 2 o valor do registrador 1
-        new Word(Opcode.JMPIG, 5, 2, -1), // verifica se o registrador 2 é maior que zero, se sim pula para a linha
-                                            // registrada no registrador 5
+		new Word(Opcode.LDI, 0, -1, 12),
+		new Word(Opcode.STD, 0, -1, 42),
 
-        new Word(Opcode.LDX, 2, 0, -1), // armazena no registrador 2 o valor indicado pelo registrador 0
-        new Word(Opcode.STX, 0, 1, -1), // armazena na posição da memória indicada pelo registrador 0 o valor do
-                                        // registrador 2
-        new Word(Opcode.SUBI, 0, -1, 1), // subtrai 1 do registrador 0
-        new Word(Opcode.STX, 0, 2, -1), // armazena na posição da memória indicada pelo registrador
-        new Word(Opcode.ADDI, 0, -1, 1), // adiciona 1 ao registrador 0
-        new Word(Opcode.JMPI, 5, 0, -1), // Coloca no program counter o valor do registrador 5
+		new Word(Opcode.LDI, 0, -1, 1),
+		new Word(Opcode.STD, 0, -1, 43),
 
-        new Word(Opcode.JMPIE, 7, 4, -1), // verifica se o valor do registrador 4 é igual a zero, se sim pula para a
-                                            // linha indicada pelo registrador 7
-        new Word(Opcode.SUBI, 4, -1, 1), // subtrai 1 do registrador 4
-        new Word(Opcode.LDI, 0, -1, 40), // armazena no registrador 0 o valor 40
-        new Word(Opcode.LDI, 3, -1, 6), // armazena no registrador 3 o valor 6
-        new Word(Opcode.JMPIG, 5, 0, -1), // fim do loop - verifica se o valor do registrador 0 é maior do que zero,
-                                            // se sim pula para a linha no valor do registrador 5
+		new Word(Opcode.LDI, 0, -1, 29),
+		new Word(Opcode.STD, 0, -1, 44),
+			
+		new Word(Opcode.LDI, 0, -1, -12),
+		new Word(Opcode.STD, 0, -1, 45),
 
-        new Word(Opcode.STOP, -1, -1, -1) 
+		new Word(Opcode.LDI, 0, -1, 0),
+		new Word(Opcode.STD, 0, -1, 46),// valores carregados
+
+		new Word(Opcode.LDI, 3, -1, 6), 
+		new Word(Opcode.LDI, 4, -1, 6), 
+		new Word(Opcode.LDI, 5, -1, 20), 
+		new Word(Opcode.LDI, 6, -1, 33), 
+		new Word(Opcode.LDI, 7, -1, 38), 		
+		new Word(Opcode.LDI, 0, -1, 40), 
+
+		new Word(Opcode.JMPIE, 6, 3, -1), //inicio loop
+
+		new Word(Opcode.SUBI, 3, -1, 1),  
+		new Word(Opcode.LDX, 1, 0, -1),  
+		new Word(Opcode.ADDI, 0, -1, 1), 
+		new Word(Opcode.LDX, 2, 0, -1), 
+		new Word(Opcode.SUB, 2, 1, -1), 
+		new Word(Opcode.JMPIG, 5, 2, -1),
+
+		new Word(Opcode.LDX, 2, 0, -1),
+		new Word(Opcode.STX, 0, 1, -1),
+		new Word(Opcode.SUBI, 0, -1, 1),
+		new Word(Opcode.STX, 0, 2, -1),
+		new Word(Opcode.ADDI, 0, -1, 1),
+		new Word(Opcode.JMPI, 5, 0 , -1),
+
+		new Word(Opcode.JMPIE, 7, 4, -1),
+		new Word(Opcode.SUBI, 4, -1, 1),
+		new Word(Opcode.LDI, 0, -1, 40),
+		new Word(Opcode.LDI, 3, -1, 6),
+		new Word(Opcode.JMPIG, 5, 0, -1),//fim do loop
+
+		new Word(Opcode.STOP, -1, -1, -1)
     };
 }

@@ -5,8 +5,9 @@ public class App {
 		vm.mm.availableFrames[1] = false;
 
 		//Cria processos na memória e coloca na fila de prontos
-		vm.load(Program.PA);
+		vm.load(Program.PC);
 		vm.load(Program.PB);
+		vm.load(Program.PA);
 
 		Console.log("\n\n\n All Programas loaded DUMP");
 		vm.dump(0, 100);
