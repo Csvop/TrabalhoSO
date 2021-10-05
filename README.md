@@ -94,9 +94,6 @@ public class App {
 
 Foram feitos todos os programas requeridos: PA, PB e PC. Também tem o TRAP_IN e TRAP_OUT.
 
-### Seção Considerações
-A utilização do gradle pelo comando `gradle run` pode causar alguns problemas quando são executados programas que precisam ler valores diretamente do terminal (`System.in`).
-
 ## 🛠ㅤTecnologias
 
 As seguintes ferramentas foram usadas na construção do projeto:
