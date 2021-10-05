@@ -94,18 +94,6 @@ public class App {
 
 Foram feitos todos os programas requeridos: PA, PB e PC. Também tem o TRAP_IN e TRAP_OUT.
 
-### Seção de Saídas
-
-#### PA
-<div align="center"><img src=https://cdn.discordapp.com/attachments/872968154723270657/880547929516015716/unknown.png /></div>
-
-#### PB
-<div align="center"><img src=https://cdn.discordapp.com/attachments/872968154723270657/880548097376260176/unknown.png /></div>
-
-#### PC
-não rodou :(
-
-
 ### Seção Considerações
 A utilização do gradle pelo comando `gradle run` pode causar alguns problemas quando são executados programas que precisam ler valores diretamente do terminal (`System.in`).
 
