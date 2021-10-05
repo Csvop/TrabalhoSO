@@ -15,7 +15,7 @@ public class VM {
 
     public VM(){
 		//Hardware
-        mem = blankMemory(1024);
+        mem = blankMemory(512);
 
         //Software
         readyQueue = new LinkedList<PCB>();
@@ -85,5 +85,20 @@ public class VM {
                     break;
             }
         }
+    }
+
+    public void dump(boolean[] frames) {
+        Console.debug(" > Memory.dump(frames) \n");
+        for (int i = 0; i < frames.length; i++) {
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+              Console.log("[" + i + "] (" + frames[i] + ")");
+        }
+        Console.print("\n");
     }
 }
