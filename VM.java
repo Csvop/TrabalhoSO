@@ -2,29 +2,31 @@ import java.util.LinkedList;
 
 public class VM {
     //Hardwares
-    public int tamMem;    
-    public Word[] mem;
-    public CPU cpu;
+    public int tamMem;  //ok 
+    public Word[] mem; //ok
+    public CPU cpu; //ok
 
     //Software - Gerenciadores
-    public MemoryManager mm;
-    public ProcessManager pm;
-    public Scheduler scheduler;
-    public LinkedList<PCB> readyQueue;
-    public Routine routine;
+    public MemoryManager mm; //ok
+    public ProcessManager pm; //ok
+    public Scheduler scheduler; //ok
+    public LinkedList<PCB> readyQueue; //ok
+    public Routine routine; //ok
 
     public VM(){
 		//Hardware
-        mem = blankMemory(512);
+        tamMem = 512;
+        mem = blankMemory(tamMem);
 
         //Software
         readyQueue = new LinkedList<PCB>();
         scheduler = new Scheduler(readyQueue);
         mm = new MemoryManager(this.mem);
         pm = new ProcessManager(mm, readyQueue);
-        this.routine = new Routine(pm, scheduler);
-
+        routine = new Routine(pm, scheduler);
         cpu = new CPU(mem, mm);
+
+        
 	}
 
     public void load(Word[] program) {
