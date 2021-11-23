@@ -1,13 +1,13 @@
 import java.util.Scanner;
 
 /**
- * A classe {@code Console} é a mais frequentemente usada.
+ * A classe {@code SystemOut} é a mais frequentemente usada.
  * Possui métodos estáticos para interagir com o terminal.
  * Serve para ler e escrever texto.
  *
  * @author  Fizoratti
  */
-public class Console {
+public class SystemOut {
     
     /**
      * Imprime na linha corrente do terminal o valor {@code toString()} de um objeto.
@@ -27,7 +27,7 @@ public class Console {
      */
     public static void log(Object _object) {
         String breakLine = "\n";
-        Console.print(_object.toString() + breakLine);
+        SystemOut.print(_object.toString() + breakLine);
     }
 
 
@@ -87,7 +87,7 @@ public class Console {
     }
 
 
-    public static final Scanner readConsole = new Scanner(System.in);
+    public static final Scanner readSystemOut = new Scanner(System.in);
 
     /**
      * Obtém valor de entrada inserido no terminal pelo usuário.
@@ -97,14 +97,14 @@ public class Console {
     public static String read() {
         String input = "";
         try {
-            if(readConsole.hasNextLine()){
-                input = readConsole.nextLine();
+            if(readSystemOut.hasNextLine()){
+                input = readSystemOut.nextLine();
             }
         } 
         catch (Exception exception) {
             System.err.format(
                 Emoji.OCTAGONAL_SIGN + 
-                Dye.red(" Error: Console I/O exception: %s%n"), 
+                Dye.red(" Error: SystemOut I/O exception: %s%n"), 
                 exception
             );
         }

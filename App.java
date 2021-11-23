@@ -13,13 +13,13 @@ public class App {
 
 		vm.dump(vm.mm.availableFrames); // Printa os frames livres/ocupados (false = ocupado)
 		
-		Console.log("\n\n\n All Programas loaded DUMP");
+		SystemOut.log("\n\n\n All Programas loaded DUMP");
 		vm.dump(0, 100);
 		
 		// Manda rodar a maquina com os programas carregados
 		vm.run();
 		
-		Console.log("\n\n\n FINAL DUMP"); // Limpou todos os programas da memória
+		SystemOut.log("\n\n\n FINAL DUMP"); // Limpou todos os programas da memória
 		vm.dump(0, 100);
 	}
 }

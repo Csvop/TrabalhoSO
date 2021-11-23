@@ -35,7 +35,7 @@ public class VM {
 
 	public void dump(int ini, int fim) {
 		for (int i = ini; i < fim; i++) {
-			Console.log(i + ": " + mem[i]);
+			SystemOut.log(i + ": " + mem[i]);
 		}
 	}
 
@@ -80,7 +80,7 @@ public class VM {
                     //tenho que tirar da fila
                     process.setContext(cpu.getContext());
                     readyQueue.addLast(process);
-                    readyQueue.forEach((e) -> Console.log(e));
+                    readyQueue.forEach((e) -> SystemOut.log(e));
                     break;
                 case TRAP:
                     routine.stop(process);
@@ -90,17 +90,17 @@ public class VM {
     }
 
     public void dump(boolean[] frames) {
-        Console.debug(" > Memory.dump(frames) \n");
+        SystemOut.debug(" > Memory.dump(frames) \n");
         for (int i = 0; i < frames.length; i++) {
-            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-            Console.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-              Console.log("[" + i + "] (" + frames[i] + ")");
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
+              SystemOut.log("[" + i + "] (" + frames[i] + ")");
         }
-        Console.print("\n");
+        SystemOut.print("\n");
     }
 }

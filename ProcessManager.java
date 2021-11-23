@@ -15,7 +15,7 @@ public class ProcessManager {
         ArrayList<Integer> allocatedPages = mm.allocate(program);
 
         if(allocatedPages == null) {
-            Console.error(" Não foi possível alocar o programa na memória " + program.toString());
+            SystemOut.error(" Não foi possível alocar o programa na memória " + program.toString());
             return;
         }
 

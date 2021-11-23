@@ -248,26 +248,26 @@ public class CPU {
             }
 
             if (interrupt != Interrupt.NONE) {
-				Console.log("v Interrupção v");
+				SystemOut.log("v Interrupção v");
 				switch (interrupt){
                     case INVALID_ADDRESS:
-                        Console.print("\n");
-                        Console.warn(" > Interrupt.INVALID_ADDRESS");
+                        SystemOut.print("\n");
+                        SystemOut.warn(" > Interrupt.INVALID_ADDRESS");
                         return interrupt;
 
                     case INVALID_INSTRUCTION:
-                        Console.print("\n");
-                        Console.warn(" > Interrupt.INVALID_INSTRUCTION");
+                        SystemOut.print("\n");
+                        SystemOut.warn(" > Interrupt.INVALID_INSTRUCTION");
                         return interrupt;
 
                     case OVERFLOW:
-                        Console.print("\n");
-                        Console.warn(" > Interrupt.OVERFLOW");
+                        SystemOut.print("\n");
+                        SystemOut.warn(" > Interrupt.OVERFLOW");
                         return interrupt;
 
                     case TIMER:
-                        Console.print("\n");
-                        Console.warn(" > Interrupt.TIMER");
+                        SystemOut.print("\n");
+                        SystemOut.warn(" > Interrupt.TIMER");
                         return interrupt;
 
                     case TRAP:
@@ -276,8 +276,8 @@ public class CPU {
                         return interrupt;
 
                     case STOP:
-                        Console.print("\n");
-                        Console.warn(" > Interrupt.STOP");
+                        SystemOut.print("\n");
+                        SystemOut.warn(" > Interrupt.STOP");
                         return interrupt;
 
                     case NONE:
