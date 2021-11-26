@@ -1,24 +1,29 @@
 import java.util.LinkedList;
 
 public class VM {
-    //Hardwares
-    public int tamMem;  //ok 
-    public Word[] mem; //ok
-    public CPU cpu; //ok
+    private static VM INSTANCE;
 
-    //Software - Gerenciadores
-    public MemoryManager mm; //ok
-    public ProcessManager pm; //ok
-    public Scheduler scheduler; //ok
-    public LinkedList<PCB> readyQueue; //ok
-    public Routine routine; //ok
+    // Hardwares
+    public int tamMem; // ok
+    public Word[] mem; // ok
+    public CPU cpu; // ok (THREAD)
 
-    public VM(){
-		//Hardware
+    // Software - Gerenciadores
+    public MemoryManager mm; // ok
+    public ProcessManager pm; // ok
+    public Scheduler scheduler; // ok (THREAD)
+    public LinkedList<PCB> readyQueue; // ok
+    public Routine routine; // ok
+
+    public Shell shell; // (THREAD)
+    // public Console console; // (THREAD)
+
+    public VM() {
+        // Hardware
         tamMem = 512;
         mem = blankMemory(tamMem);
 
-        //Software
+        // Software
         readyQueue = new LinkedList<PCB>();
         scheduler = new Scheduler(readyQueue);
         mm = new MemoryManager(this.mem);
@@ -26,24 +31,33 @@ public class VM {
         routine = new Routine(pm, scheduler);
         cpu = new CPU(mem, mm);
 
-        
-	}
+        shell = new Shell();
+        // console = new Console();
+
+        // Init threads
+        init();
+    }
 
     public void load(Word[] program) {
         pm.createProcess(program);
     }
 
-	public void dump(int ini, int fim) {
-		for (int i = ini; i < fim; i++) {
-			SystemOut.log(i + ": " + mem[i]);
-		}
-	}
+    public void dump(int ini, int fim) {
+        for (int i = ini; i < fim; i++) {
+            SystemOut.log(i + ": " + mem[i]);
+        }
+    }
 
     public Word[] blankMemory(int tamMem) {
-		mem = new Word[tamMem];
-		for (int i=0; i<tamMem; i++)
-			mem[i] = Word.copy(Word.BLANK);
+        mem = new Word[tamMem];
+        for (int i = 0; i < tamMem; i++)
+            mem[i] = Word.copy(Word.BLANK);
         return mem;
+    }
+
+    public void wipeMemory() {
+        this.mem = blankMemory(this.tamMem);
+        this.mm.setAllFramesAvailable();
     }
 
     private Interrupt runCPU(PCB pcb) {
@@ -52,7 +66,7 @@ public class VM {
     }
 
     public void run() {
-        while(!readyQueue.isEmpty()) {
+        while (!readyQueue.isEmpty()) {
 
             PCB process = scheduler.schedule();
 
@@ -60,7 +74,7 @@ public class VM {
 
             System.out.println(interrupt.toString());
 
-            switch(interrupt) {
+            switch (interrupt) {
                 case NONE:
                     break;
                 case INVALID_ADDRESS:
@@ -77,7 +91,7 @@ public class VM {
                     routine.stop(process);
                     break;
                 case TIMER:
-                    //tenho que tirar da fila
+                    // tenho que tirar da fila
                     process.setContext(cpu.getContext());
                     readyQueue.addLast(process);
                     readyQueue.forEach((e) -> SystemOut.log(e));
@@ -92,15 +106,36 @@ public class VM {
     public void dump(boolean[] frames) {
         SystemOut.debug(" > Memory.dump(frames) \n");
         for (int i = 0; i < frames.length; i++) {
-            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-            SystemOut.print("[" + i + "] (" + frames[i] + ") --- "); i++;
-              SystemOut.log("[" + i + "] (" + frames[i] + ")");
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- ");
+            i++;
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- ");
+            i++;
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- ");
+            i++;
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- ");
+            i++;
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- ");
+            i++;
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- ");
+            i++;
+            SystemOut.print("[" + i + "] (" + frames[i] + ") --- ");
+            i++;
+            SystemOut.log("[" + i + "] (" + frames[i] + ")");
         }
         SystemOut.print("\n");
+    }
+
+    public void init() {
+        // cpu.start();
+        // scheduler.start();
+        shell.start();
+        // console.start();
+    }
+
+    public static VM get() {
+        if (INSTANCE == null) {
+            INSTANCE = new VM();
+        }
+        return INSTANCE;
     }
 }
