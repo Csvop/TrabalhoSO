@@ -17,6 +17,7 @@ public class VM {
     public LinkedList<PCB> blockedQueue; //ok
     public Routines routine; //ok
     public Shell shell; // (THREAD)
+    public Console console; // (THREAD)
 
     //Semaforos
     public Semaphore semCPU;
@@ -40,7 +41,7 @@ public class VM {
         cpu = new CPU(mem, mm, semCPU, semESC, routine);
 
         shell = new Shell();
-        // console = new Console();
+        console = new Console();
 
         // Init threads
         init();
@@ -101,7 +102,8 @@ public class VM {
         shell.setName("Shell");
         shell.start();
         
-        // console.start();
+        console.setName("Console");
+        console.start();
     }
 
     public static VM get() {
