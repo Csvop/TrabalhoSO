@@ -11,51 +11,49 @@ public class MemoryManager {
     public MemoryManager(Word[] memory) {
         this.memory = memory;
         pageSize = 16;
-        frames = memory.length/pageSize;
+        frames = memory.length / pageSize;
         availableFrames = new boolean[frames];
         Arrays.fill(availableFrames, true);
     }
 
     public ArrayList<Integer> allocate(Word[] program) {
         int tamProg = program.length;
-        if(tamProg%pageSize == 0){
-            auxPage = ((tamProg/pageSize));
-        }
-        else{
-            auxPage = ((tamProg/pageSize)+1);
+        if (tamProg % pageSize == 0) {
+            auxPage = ((tamProg / pageSize));
+        } else {
+            auxPage = ((tamProg / pageSize) + 1);
         }
         int cont = 0;
         int posProg = 0;
 
         ArrayList<Integer> pages = new ArrayList<>();
-        for(int i=0; i<availableFrames.length; i++){
-            if(availableFrames[i] == true){
+        for (int i = 0; i < availableFrames.length; i++) {
+            if (availableFrames[i] == true) {
                 cont++;
                 availableFrames[i] = false;
                 pages.add(i);
-                for (int j=(i*pageSize); j<(i+1)*pageSize; j++) {
-                    if(posProg < program.length){
+                for (int j = (i * pageSize); j < (i + 1) * pageSize; j++) {
+                    if (posProg < program.length) {
                         memory[j].opc = program[posProg].opc;
                         memory[j].r1 = program[posProg].r1;
                         memory[j].r2 = program[posProg].r2;
                         memory[j].p = program[posProg].p;
                         posProg++;
-                    }
-                    else{
+                    } else {
                         break;
                     }
                 }
             }
-            if(cont == auxPage){ 
+            if (cont == auxPage) {
                 return pages;
             }
-        }    
+        }
         return null;
     }
 
     public void unallocate(PCB processo) {
         ArrayList<Integer> pages = processo.getAllocatedPages();
-        for(int i = 0; i < pages.size(); i ++) {
+        for (int i = 0; i < pages.size(); i++) {
             availableFrames[pages.get(i)] = true;
             for (int j = pageSize * pages.get(i); j < pageSize * (pages.get(i) + 1); j++) {
                 memory[j].opc = Opcode.___;
@@ -64,5 +62,9 @@ public class MemoryManager {
                 memory[j].p = -1;
             }
         }
+    }
+
+    public void setAllFramesAvailable() {
+        Arrays.fill(VM.get().mm.availableFrames, true);
     }
 }
