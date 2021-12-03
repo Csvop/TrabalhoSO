@@ -285,7 +285,8 @@ public class CPU extends Thread {
                         break;
                     case TRAP:
                         routine.trap(getContext());
-                        break;     
+                        break;
+                    case NONE:
                 }
             }
         }
