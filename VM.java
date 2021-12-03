@@ -12,7 +12,8 @@ public class VM {
     public ProcessManager pm; //ok
     public Scheduler scheduler; //ok
     public LinkedList<PCB> readyQueue; //ok
-    public Routine routine; //ok
+    public LinkedList<PCB> blockedQueue; //ok
+    public Routines routine; //ok
 
     //Semaforos
     public Semaphore semCPU;
@@ -29,12 +30,22 @@ public class VM {
 
         //Software
         readyQueue = new LinkedList<PCB>();
-        scheduler = new Scheduler(readyQueue);
+        scheduler = new Scheduler(readyQueue, semESC, semCPU, cpu);
         mm = new MemoryManager(this.mem);
         pm = new ProcessManager(mm, readyQueue);
-        routine = new Routine(pm, scheduler);
+        routine = new Routines(pm, scheduler, semESC, blockedQueue);
         cpu = new CPU(mem, mm, semCPU, semESC, routine);
+
+        start();
 	}
+
+    private void start() {
+        scheduler.setName("Scheduler");
+        scheduler.start();
+
+        cpu.setName("CPU");
+        cpu.start();
+    }
 
     public void load(Word[] program) {
         pm.createProcess(program);
@@ -51,11 +62,6 @@ public class VM {
 		for (int i=0; i<tamMem; i++)
 			mem[i] = Word.copy(Word.BLANK);
         return mem;
-    }
-
-    public void run() {
-        cpu.setName("CPU");
-        cpu.start();
     }
 
     public void dump(boolean[] frames) {

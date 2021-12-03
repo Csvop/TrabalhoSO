@@ -13,10 +13,10 @@ public class CPU extends Thread {
     public int timer; //conta instrucoes
     public Semaphore semCPU;
     public Semaphore semESC;
-    public Routine routine;
+    public Routines routine;
 
 
-    public CPU(Word[] memory, MemoryManager mm, Semaphore semCPU, Semaphore semESC, Routine routine) { 
+    public CPU(Word[] memory, MemoryManager mm, Semaphore semCPU, Semaphore semESC, Routines routine) { 
         //Settando a memoria
         this.memory = memory; 
         reg = new int[10];
@@ -281,10 +281,10 @@ public class CPU extends Thread {
                         routine.interruption();
                         break;
                     case TIMER:
-                        routine.timer();
+                        routine.timer(getContext());
                         break;
                     case TRAP:
-                        routine.trap();
+                        routine.trap(getContext());
                         break;     
                 }
             }

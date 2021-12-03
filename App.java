@@ -6,7 +6,7 @@ public class App {
 
 		//Cria processos na memória e coloca na fila de prontos
 		vm.load(Program.PC);
-		// vm.load(Program.PB);
+		vm.load(Program.PB);
 		// vm.load(Program.PA);
 		// vm.load(Program.TRAP_IN);
 		// vm.load(Program.TRAP_OUT);
@@ -17,8 +17,6 @@ public class App {
 		vm.dump(0, 100);
 		
 		// Manda rodar a maquina com os programas carregados
-		vm.run();
-		
 		SystemOut.log("\n\n\n FINAL DUMP"); // Limpou todos os programas da memória
 		vm.dump(0, 100);
 	}
