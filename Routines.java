@@ -6,13 +6,15 @@ public class Routines {
     private Scheduler scheduler;
     private Semaphore semScheduler;
     private List<PCB> blockedQueue;
+    private Console console;
 
     public Routines(ProcessManager pm, Scheduler scheduler, 
-                    Semaphore semScheduler, List<PCB> blockedQueue) {
+                    Semaphore semScheduler, List<PCB> blockedQueue, Console console) {
         this.pm = pm;
         this.scheduler = scheduler;
         this.semScheduler = semScheduler;
         this.blockedQueue = blockedQueue;
+        this.console = console;
     }
 
     //finaliza o processo, chamando o grenciador de processos e escalona novo processo
@@ -47,7 +49,7 @@ public class Routines {
         String type = (instruction.r1 == 1) ? "IN" : "OUT";
         //Chama o console aqui pra fazer o out
         //fila de pedidos <- nova chamada de console
-        VM.get().console.addToQueue(process);
+        console.addToQueue(process);
         semScheduler.release();
     }
 

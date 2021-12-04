@@ -23,7 +23,7 @@ public class VM {
     public Semaphore semCPU = new Semaphore(0);
     public Semaphore semESC = new Semaphore(0);
 
-    public VM(){
+    public VM(Semaphore semAllAPP){
 		//Hardware
         tamMem = 512;
         mem = blankMemory(tamMem);
@@ -40,9 +40,10 @@ public class VM {
         
         scheduler = new Scheduler(readyQueue, semESC, semCPU, cpu);
         
-        routine = new Routines(pm, scheduler, semESC, blockedQueue);
+        console = new Console(cpu, mem, semAllAPP);
+        
+        routine = new Routines(pm, scheduler, semESC, blockedQueue, console);
 
-        console = new Console(cpu, routine, mem);
 
         // Configura o processo inicial
         cpu.configure(routine, mm);

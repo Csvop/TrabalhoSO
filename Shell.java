@@ -1,6 +1,8 @@
 import java.util.Scanner;
+import java.util.concurrent.Semaphore;
 
 public class Shell extends Thread {
+    Semaphore semaphore = new Semaphore(0);
 
     public Scanner ler = new Scanner(System.in);
 
@@ -166,7 +168,7 @@ public class Shell extends Thread {
 
     public void run() {
         // Programas (nossos programas são static, não precisam ser instanciados aqui.)
-        VM vm = new VM();
+        VM vm = new VM(semaphore);
         // Menu
         while (active) {
             showMenuPrincipal(vm);

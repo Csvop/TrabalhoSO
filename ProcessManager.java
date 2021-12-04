@@ -32,6 +32,7 @@ public class ProcessManager {
 
     public void endProcess(PCB processo) {
         mutex.acquireUninterruptibly();
+            try {Thread.sleep(1000);} catch (InterruptedException e) {}
             mm.printMemory();
             mm.unallocate(processo);
             readyQueue.remove(processo);

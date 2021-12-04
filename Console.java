@@ -1,24 +1,22 @@
+import java.util.LinkedList;
 import java.util.Scanner;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
 
 public class Console extends Thread {
-    ConcurrentLinkedQueue<PCB> consoleOrderQueue;
-
+    LinkedList<PCB> consoleOrderQueue;
     Word[] memoria;
     CPU cpu;
-    Routines routine;
-    //Semaphore semAPP;
+    Semaphore semAPP;
+    Semaphore mutex = new Semaphore(1);
 
     //public Console(Semaphore semAPP) {
-    public Console(CPU cpu, Routines routine, Word[] memoria) {
-        this.consoleOrderQueue = new ConcurrentLinkedQueue<PCB>();
+    public Console(CPU cpu, Word[] memoria, Semaphore semAPP) {
+        this.consoleOrderQueue = new LinkedList<PCB>();
 
         this.memoria = memoria;
         this.cpu = cpu;
-        this.routine = routine;
-        //this.semAPP = VM.get().semAPP;
+        this.semAPP = semAPP;
     }
 
     public void addToQueue(PCB process) {
@@ -27,7 +25,9 @@ public class Console extends Thread {
 
     public void run() {
         while(true) {
-            if (consoleOrderQueue.isEmpty()) { continue; }
+            if (consoleOrderQueue.isEmpty()) { 
+                continue; 
+            }
 
             SystemOut.debug(" > CPU.reg[8] = " + cpu.reg[8]);
             SystemOut.debug(" > CPU.reg[9] = " + cpu.reg[9]);
@@ -35,6 +35,12 @@ public class Console extends Thread {
             switch (cpu.reg[8]) {
                 case 1:
                     SystemOut.print("\n > Digite um valor inteiro: ");
+
+                    try {semAPP.acquire();
+                        mutex.acquire();
+                          Thread.sleep(10000);
+                        mutex.release();
+                    } catch (InterruptedException e) {}
 
                     Scanner in = new Scanner(System.in);
                     String input = in.nextLine();
