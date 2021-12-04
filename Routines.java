@@ -47,6 +47,7 @@ public class Routines {
         String type = (instruction.r1 == 1) ? "IN" : "OUT";
         //Chama o console aqui pra fazer o out
         //fila de pedidos <- nova chamada de console
+        VM.get().console.addToQueue(process);
         semScheduler.release();
     }
 

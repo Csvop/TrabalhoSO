@@ -17,6 +17,7 @@ public class VM {
     public LinkedList<PCB> blockedQueue; //ok
     public ConcurrentLinkedQueue<PCB> orderQueue; //ok
     public Routines routine; //ok
+    public Console console; // (THREAD)
 
     //Semaforos
     public Semaphore semCPU = new Semaphore(0);
@@ -41,7 +42,7 @@ public class VM {
         
         routine = new Routines(pm, scheduler, semESC, blockedQueue);
 
-        // console = new Console();
+        console = new Console(cpu, routine, mem);
 
         // Configura o processo inicial
         cpu.configure(routine, mm);
@@ -102,7 +103,7 @@ public class VM {
         scheduler.setName("Scheduler");
         scheduler.start();
         
-        // console.setName("Console");
-        // console.start();
+        console.setName("Console");
+        console.start();
     }
 }
