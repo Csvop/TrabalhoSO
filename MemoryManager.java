@@ -64,7 +64,9 @@ public class MemoryManager {
         }
     }
 
-    public void setAllFramesAvailable() {
-        Arrays.fill(VM.get().mm.availableFrames, true);
+    public void printMemory() {
+        for (int i = 0; i < 100; i++) {
+            System.out.println(memory[i].toString());
+        }
     }
 }

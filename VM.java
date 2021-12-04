@@ -1,9 +1,9 @@
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
 public class VM {
-    private static VM INSTANCE;
-    
     //Hardwares
     public int tamMem;  //ok 
     public Word[] mem; //ok
@@ -15,35 +15,39 @@ public class VM {
     public Scheduler scheduler; //ok
     public LinkedList<PCB> readyQueue; //ok
     public LinkedList<PCB> blockedQueue; //ok
+    public ConcurrentLinkedQueue<PCB> orderQueue; //ok
     public Routines routine; //ok
-    public Shell shell; // (THREAD)
 
     //Semaforos
-    public Semaphore semCPU;
-    public Semaphore semESC;
+    public Semaphore semCPU = new Semaphore(0);
+    public Semaphore semESC = new Semaphore(0);
 
     public VM(){
-        //Semaforos
-        semCPU = new Semaphore(0);
-        semESC = new Semaphore(0);
-
 		//Hardware
         tamMem = 512;
         mem = blankMemory(tamMem);
 
-        // Software
         readyQueue = new LinkedList<PCB>();
-        scheduler = new Scheduler(readyQueue, semESC, semCPU, cpu);
-        mm = new MemoryManager(this.mem);
-        pm = new ProcessManager(mm, readyQueue);
-        routine = new Routines(pm, scheduler, semESC, blockedQueue);
-        cpu = new CPU(mem, mm, semCPU, semESC, routine);
+        blockedQueue = new LinkedList<PCB>();
+        orderQueue = new ConcurrentLinkedQueue<PCB>();
+        
+        cpu = new CPU(this.mem, this.semCPU, this.semESC);
 
-        shell = new Shell();
+        mm = new MemoryManager(this.mem);
+        
+        pm = new ProcessManager(mm, readyQueue, semESC);
+        
+        scheduler = new Scheduler(readyQueue, semESC, semCPU, cpu);
+        
+        routine = new Routines(pm, scheduler, semESC, blockedQueue);
+
         // console = new Console();
 
+        // Configura o processo inicial
+        cpu.configure(routine, mm);
+        
         // Init threads
-        init();
+        this.init();
     }
 
 
@@ -66,7 +70,7 @@ public class VM {
 
     public void wipeMemory() {
         this.mem = blankMemory(this.tamMem);
-        this.mm.setAllFramesAvailable();
+        Arrays.fill(mm.availableFrames, true);
     }
 
     public void dump(boolean[] frames) {
@@ -98,16 +102,7 @@ public class VM {
         scheduler.setName("Scheduler");
         scheduler.start();
         
-        shell.setName("Shell");
-        shell.start();
-        
+        // console.setName("Console");
         // console.start();
-    }
-
-    public static VM get() {
-        if (INSTANCE == null) {
-            INSTANCE = new VM();
-        }
-        return INSTANCE;
     }
 }

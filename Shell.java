@@ -1,4 +1,3 @@
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class Shell extends Thread {
@@ -21,7 +20,7 @@ public class Shell extends Thread {
         SystemOut.log("\n0. Terminar o programa");
     }
 
-    public void showMenuPrincipal() {
+    public void showMenuPrincipal(VM vm) {
         showOptionsMenuPrincipal();
 
         // Variável input recebe o valor inserido pelo terminal
@@ -33,17 +32,16 @@ public class Shell extends Thread {
 
         switch (option) {
             case 1:
-                espiarCPU();
+                espiarCPU(vm);
                 break;
 
             case 2:
-                executarComandos();
+                executarComandos(vm);
                 break;
 
             case 3:
                 SystemOut.log("--------------------------");
                 SystemOut.log("CPU RUNNING");
-                VM.get().run();
                 break;
 
             case 0:
@@ -56,13 +54,13 @@ public class Shell extends Thread {
                 break;
 
             default:
-                showMenuPrincipal();
+                showMenuPrincipal(vm);
                 break;
 
         }
     }
 
-    public void espiarCPU() {
+    public void espiarCPU(VM vm) {
         SystemOut.log("--------------------------");
         SystemOut.log("ESPIANDO CPU");
 
@@ -71,10 +69,10 @@ public class Shell extends Thread {
         // Pausa de 1 segundo;
         SystemOut.wait(1000);
 
-        showMenuPrincipal();
+        showMenuPrincipal(vm);
     }
 
-    public void executarComandos() {
+    public void executarComandos(VM vm) {
         int option; // opção do menu escolhida pelo usuário
 
         do {
@@ -104,51 +102,51 @@ public class Shell extends Thread {
             switch (option) {
                 case 1:
                     SystemOut.print("\nCarregando Programa C na memoria... ");
-                    VM.get().load(Program.PC);
+                    vm.load(Program.PC);
                     SystemOut.log("(done!)");
                     break;
 
                 case 2:
                     SystemOut.print("\nCarregando Programa B na memoria... ");
-                    VM.get().load(Program.PB);
+                    vm.load(Program.PB);
                     SystemOut.log("(done!)");
                     break;
 
                 case 3:
                     SystemOut.print("\nCarregando Programa A na memoria... ");
-                    VM.get().load(Program.PA);
+                    vm.load(Program.PA);
                     SystemOut.log("(done!)");
                     break;
 
                 case 4:
                     SystemOut.print("\nCarregando Programa Trap In na memoria... ");
-                    VM.get().load(Program.TRAP_IN);
+                    vm.load(Program.TRAP_IN);
                     SystemOut.log("(done!)");
                     break;
 
                 case 5:
                     SystemOut.print("\nCarregando Programa Trap Out na memoria... ");
-                    VM.get().load(Program.TRAP_OUT);
+                    vm.load(Program.TRAP_OUT);
                     SystemOut.log("(done!)");
                     break;
 
                 case 6:
-                    VM.get().mm.availableFrames[1] = false; // Simula um frame ocupado para evidenciar o split do
+                    vm.mm.availableFrames[1] = false; // Simula um frame ocupado para evidenciar o split do
                                                             // programa em 2 frames não consecutivos
                     SystemOut.log("O segundo frame da memória foi definido como nao disponível");
                     break;
 
                 case 7:
-                    VM.get().dump(VM.get().mm.availableFrames); // Printa os frames livres/ocupados (false = ocupado)
+                    vm.dump(vm.mm.availableFrames); // Printa os frames livres/ocupados (false = ocupado)
                     break;
 
                 case 8:
-                    VM.get().dump(0, 100);
+                    vm.dump(0, 100);
                     break;
 
                 case 9:
                     SystemOut.print("\nLimpando todas as posicoes da memoria... ");
-                    VM.get().wipeMemory();
+                    vm.wipeMemory();
                     SystemOut.log("(done!)");
                     break;
 
@@ -157,22 +155,21 @@ public class Shell extends Thread {
                     break;
 
                 default:
-                    executarComandos();
+                    executarComandos(vm);
                     break;
 
             }
         } while (option != 0);
 
-        showMenuPrincipal();
+        showMenuPrincipal(vm);
     }
 
     public void run() {
-
         // Programas (nossos programas são static, não precisam ser instanciados aqui.)
-
+        VM vm = new VM();
         // Menu
         while (active) {
-            showMenuPrincipal();
+            showMenuPrincipal(vm);
         }
     }
 }

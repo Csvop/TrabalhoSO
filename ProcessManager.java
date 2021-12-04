@@ -1,33 +1,40 @@
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.Semaphore;
 
 public class ProcessManager {
     public MemoryManager mm;
     public LinkedList<PCB> readyQueue;
     private static int newProcessId = 0;
+    Semaphore mutex = new Semaphore(1);
+    Semaphore semESC;
 
-    public ProcessManager(MemoryManager mm, LinkedList<PCB> readyQueue) {
+    public ProcessManager(MemoryManager mm, LinkedList<PCB> readyQueue, Semaphore semESC) {
         this.mm = mm;
         this.readyQueue = readyQueue;
+        this.semESC = semESC;
     }
 
     public void createProcess(Word[] program) {
-        ArrayList<Integer> allocatedPages = mm.allocate(program);
+        mutex.acquireUninterruptibly();
+            ArrayList<Integer> allocatedPages = mm.allocate(program);
+            PCB pcb = new PCB(newProcessId, allocatedPages);
+            newProcessId++;
 
-        if(allocatedPages == null) {
-            SystemOut.error(" Não foi possível alocar o programa na memória " + program.toString());
-            return;
-        }
-
-        PCB newProcess = new PCB(newProcessId, allocatedPages);
-        newProcessId++;
-        readyQueue.addLast(newProcess);
-        
-        //readyQueue.forEach((e) -> System.out.println(e));
+            if(readyQueue.isEmpty()) {
+                readyQueue.addLast(pcb);
+                semESC.release();
+            } else {
+                readyQueue.addLast(pcb);
+            }
+        mutex.release();
     }
 
     public void endProcess(PCB processo) {
-        mm.unallocate(processo);
-        readyQueue.remove(processo);
+        mutex.acquireUninterruptibly();
+            mm.printMemory();
+            mm.unallocate(processo);
+            readyQueue.remove(processo);
+        mutex.release();
     }
 }

@@ -16,19 +16,19 @@ public class CPU extends Thread {
     public Routines routine;
 
 
-    public CPU(Word[] memory, MemoryManager mm, Semaphore semCPU, Semaphore semESC, Routines routine) { 
-        //Settando a memoria
+    public CPU(Word[] memory, Semaphore semCPU, Semaphore semESC) {
         this.memory = memory; 
         reg = new int[10];
-        this.mm = mm;
-        this.routine = routine;
-
-        //Settando os semaforos
         this.semCPU = semCPU;
         this.semESC = semESC;
     }
 
-/**
+    void configure(Routines routine, MemoryManager mm) {
+        this.routine = routine;
+        this.mm = mm;
+    }
+        
+    /**
      * Converte de um endereço lógico em um endereço físico.
      */
     private int translate(int pc) {
