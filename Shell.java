@@ -86,11 +86,12 @@ public class Shell extends Thread {
             SystemOut.log("3. Carregar Programa A na memoria");
             SystemOut.log("4. Carregar Programa Trap In na memoria");
             SystemOut.log("5. Carregar Programa Trap Out na memoria");
+            SystemOut.log("6. Carregar todos os programas na memoria");
 
-            SystemOut.log("6. Definir frame como nao disponivel");
-            SystemOut.log("7. Exibir dump dos frames da memoria");
-            SystemOut.log("8. Exibir dump da memoria (primeiras 100 posicoes)");
-            SystemOut.log("9. Limpar todas as posicoes de memoria");
+            SystemOut.log("7. Definir frame como nao disponivel");
+            SystemOut.log("8. Exibir dump dos frames da memoria");
+            SystemOut.log("9. Exibir dump da memoria (primeiras 100 posicoes)");
+            SystemOut.log("10. Limpar todas as posicoes de memoria");
 
             SystemOut.log("0. Retornar ao menu anterior");
 
@@ -133,20 +134,30 @@ public class Shell extends Thread {
                     break;
 
                 case 6:
-                    vm.mm.availableFrames[1] = false; // Simula um frame ocupado para evidenciar o split do
-                                                            // programa em 2 frames não consecutivos
-                    SystemOut.log("O segundo frame da memória foi definido como nao disponível");
+                    SystemOut.print("\nCarregando na memoria os programas: A, B, C, TRAP_IN e TRAP_OUT... ");
+                    vm.load(Program.PA);
+                    vm.load(Program.PB);
+                    vm.load(Program.PC);
+                    vm.load(Program.TRAP_IN);
+                    vm.load(Program.TRAP_OUT);
+                    SystemOut.log("(done!)");
                     break;
 
                 case 7:
-                    vm.dump(vm.mm.availableFrames); // Printa os frames livres/ocupados (false = ocupado)
+                    vm.mm.availableFrames[1] = false; // Simula um frame ocupado para evidenciar o split do
+                                                      // programa em 2 frames não consecutivos
+                    SystemOut.log("O segundo frame da memória foi definido como nao disponível");
                     break;
 
                 case 8:
-                    vm.dump(0, 100);
+                    vm.dump(vm.mm.availableFrames); // Printa os frames livres/ocupados (false = ocupado)
                     break;
 
                 case 9:
+                    vm.dump(0, 100);
+                    break;
+
+                case 10:
                     SystemOut.print("\nLimpando todas as posicoes da memoria... ");
                     vm.wipeMemory();
                     SystemOut.log("(done!)");
