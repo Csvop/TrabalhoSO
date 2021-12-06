@@ -163,6 +163,16 @@ public class Shell extends Thread {
                     SystemOut.log("(done!)");
                     break;
 
+                case 10:
+                    SystemOut.print("\nCarregando na memoria os programas: A, B, C, TRAP_IN e TRAP_OUT... ");
+                    vm.load(Program.PA);
+                    vm.load(Program.PB);
+                    vm.load(Program.PC);
+                    vm.load(Program.TRAP_IN);
+                    vm.load(Program.TRAP_OUT);
+                    SystemOut.log("(done!)");
+                    break;
+
                 case 0:
                     SystemOut.log("\nRetornando ao menu principal...");
                     break;
