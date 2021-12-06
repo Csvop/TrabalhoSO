@@ -134,7 +134,7 @@ public class Shell extends Thread {
 
                 case 6:
                     vm.mm.availableFrames[1] = false; // Simula um frame ocupado para evidenciar o split do
-                                                            // programa em 2 frames não consecutivos
+                                                      // programa em 2 frames não consecutivos
                     SystemOut.log("O segundo frame da memória foi definido como nao disponível");
                     break;
 
@@ -149,6 +149,16 @@ public class Shell extends Thread {
                 case 9:
                     SystemOut.print("\nLimpando todas as posicoes da memoria... ");
                     vm.wipeMemory();
+                    SystemOut.log("(done!)");
+                    break;
+
+                case 10:
+                    SystemOut.print("\nCarregando na memoria os programas: A, B, C, TRAP_IN e TRAP_OUT... ");
+                    vm.load(Program.PA);
+                    vm.load(Program.PB);
+                    vm.load(Program.PC);
+                    vm.load(Program.TRAP_IN);
+                    vm.load(Program.TRAP_OUT);
                     SystemOut.log("(done!)");
                     break;
 
