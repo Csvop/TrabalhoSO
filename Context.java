@@ -5,12 +5,14 @@ public class Context {
     private int[] reg;
     private int pc;
     private Word ir;
+    private int id;
 
-    public Context(ArrayList<Integer> allocatedPages, int[] reg, int pc, Word ir) {
+    public Context(ArrayList<Integer> allocatedPages, int[] reg, int pc, Word ir, int id) {
         this.allocatedPages = allocatedPages;
         this.reg = reg;
         this.pc = pc;
         this.ir = ir;
+        this.id = id;
     }
 
     public ArrayList<Integer> getAllocatedPages() {
@@ -27,5 +29,9 @@ public class Context {
 
     public Word getIr() {
         return ir;
+    }
+
+    public int getProcessId() {
+        return id;
     }
 }

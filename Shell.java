@@ -138,8 +138,8 @@ public class Shell extends Thread {
                     vm.load(Program.PA);
                     vm.load(Program.PB);
                     vm.load(Program.PC);
-                    vm.load(Program.TRAP_IN);
-                    vm.load(Program.TRAP_OUT);
+                    //vm.load(Program.TRAP_IN);
+                    //vm.load(Program.TRAP_OUT);
                     SystemOut.log("(done!)");
                     break;
 

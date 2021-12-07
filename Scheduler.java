@@ -26,6 +26,7 @@ public class Scheduler extends Thread {
                 }
                 PCB pcb = readyQueue.removeFirst();
                 this.currentProcess = pcb;
+                Thread.sleep(50);
                 cpu.setContext(pcb.getContext());
                 semCpu.release();
             } catch (InterruptedException e) {

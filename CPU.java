@@ -14,6 +14,7 @@ public class CPU extends Thread {
     public Semaphore semCPU;
     public Semaphore semESC;
     public Routines routine;
+    public int processId;
 
 
     public CPU(Word[] memory, Semaphore semCPU, Semaphore semESC) {
@@ -54,7 +55,7 @@ public class CPU extends Thread {
     }
     
     public Context getContext() {
-        return new Context(paginas, reg, pc, ir);
+        return new Context(paginas, reg, pc, ir, processId);
     }
 
     public void setContext(Context context) { 
@@ -62,6 +63,7 @@ public class CPU extends Thread {
         pc = context.getPc();
         reg = context.getReg();
         interrupt = Interrupt.NONE;
+        processId = context.getProcessId();
     }
 
     public void run() { // execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente setado
@@ -282,6 +284,10 @@ public class CPU extends Thread {
                         break;
                     case TIMER:
                         routine.timer(getContext());
+                        System.out.println(processId + " -> Timer");
+                        try {
+                            //Thread.sleep(200);
+                        } catch (Exception e) {}
                         break;
                     case TRAP:
                         routine.trap(getContext());

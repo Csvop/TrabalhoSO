@@ -15,7 +15,7 @@ public class PCB {
     public PCB(int id, ArrayList<Integer> allocatedPages) {
         this.id = id;
         this.allocatedPages = allocatedPages;
-        this.context = new Context(allocatedPages, new int[10], 0, Word.copy(Word.BLANK));
+        this.context = new Context(allocatedPages, new int[10], 0, Word.copy(Word.BLANK), id);
     }
 
     //retorna a lista de paginas de um processo
