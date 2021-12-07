@@ -19,35 +19,42 @@ public class MemoryManager {
     public ArrayList<Integer> allocate(Word[] program) {
         int tamProg = program.length;
 
-        if (tamProg % pageSize == 0) {
-            auxPage = ((tamProg / pageSize));
-        } else {
-            auxPage = ((tamProg / pageSize) + 1);
-        }
-        int cont = 0;
-        int posProg = 0;
+        if (tamProg < availableMemoryPositionsCount()) {
 
-        ArrayList<Integer> pages = new ArrayList<>();
-        for (int i = 0; i < availableFrames.length; i++) {
-            if (availableFrames[i] == true) {
-                cont++;
-                availableFrames[i] = false;
-                pages.add(i);
-                for (int j = (i * pageSize); j < (i + 1) * pageSize; j++) {
-                    if (posProg < program.length) {
-                        memory[j].opc = program[posProg].opc;
-                        memory[j].r1 = program[posProg].r1;
-                        memory[j].r2 = program[posProg].r2;
-                        memory[j].p = program[posProg].p;
-                        posProg++;
-                    } else {
-                        break;
+            if (tamProg % pageSize == 0) {
+                auxPage = ((tamProg / pageSize));
+            } else {
+                auxPage = ((tamProg / pageSize) + 1);
+            }
+            int cont = 0;
+            int posProg = 0;
+
+            ArrayList<Integer> pages = new ArrayList<>();
+            for (int i = 0; i < availableFrames.length; i++) {
+                if (availableFrames[i] == true) {
+                    cont++;
+                    availableFrames[i] = false;
+                    pages.add(i);
+                    for (int j = (i * pageSize); j < (i + 1) * pageSize; j++) {
+                        if (posProg < program.length) {
+                            memory[j].opc = program[posProg].opc;
+                            memory[j].r1 = program[posProg].r1;
+                            memory[j].r2 = program[posProg].r2;
+                            memory[j].p = program[posProg].p;
+                            posProg++;
+                        } else {
+                            break;
+                        }
                     }
                 }
+                if (cont == auxPage) {
+                    return pages;
+                }
             }
-            if (cont == auxPage) {
-                return pages;
-            }
+        } else {
+            SystemOut.warn("Não há espaço suficiente na memória para alocar o programa. ");
+            SystemOut.debug("Tamanho do programa: " + tamProg);
+            SystemOut.debug("Memória livre: " + availableMemoryPositionsCount());
         }
         return null;
     }
@@ -66,7 +73,11 @@ public class MemoryManager {
     }
 
     public void printMemory() {
-        for (int i = 0; i < 100; i++) {
+        int positions = 100;
+        if (memory.length < 100) {
+            positions = memory.length;
+        }
+        for (int i = 0; i < positions; i++) {
             System.out.println(memory[i].toString());
         }
     }
