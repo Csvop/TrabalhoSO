@@ -12,18 +12,18 @@ public class Shell extends Thread {
         this.active = true;
     }
 
-    public void showOptionsMenuPrincipal() {
+    public void showOptionsMenuPrincipal(VM vm) {
         SystemOut.log("\n=========== MENU ===========");
-        SystemOut.log("1. Espiar o que a CPU esta executando");
-        SystemOut.log("2. Executar comandos");
+        SystemOut.print(Dye.cyan("(Virtual Machine) memory size: " + vm.tamMem));
 
-        SystemOut.log("3. (non-threaded cpu test) Run CPU");
+        SystemOut.log("\n1. Espiar a CPU esta executando");
+        SystemOut.log("2. Executar comandos");
 
         SystemOut.log("\n0. Terminar o programa");
     }
 
     public void showMenuPrincipal(VM vm) {
-        showOptionsMenuPrincipal();
+        showOptionsMenuPrincipal(vm);
 
         // Variável input recebe o valor inserido pelo terminal
         SystemOut.print("\n > Digite a opcao: ");
@@ -39,11 +39,6 @@ public class Shell extends Thread {
 
             case 2:
                 executarComandos(vm);
-                break;
-
-            case 3:
-                SystemOut.log("--------------------------");
-                SystemOut.log("CPU RUNNING");
                 break;
 
             case 0:
@@ -66,7 +61,11 @@ public class Shell extends Thread {
         SystemOut.log("--------------------------");
         SystemOut.log("ESPIANDO CPU");
 
-        SystemOut.log("\n>WIP<\n");
+        SystemOut.debug("Instruction register:" + vm.cpu.ir);
+        SystemOut.debug("Program counter:" + vm.cpu.pc);
+        vm.cpu.printRegistradores();
+        SystemOut.debug("Current process id:" + vm.cpu.processId);
+        SystemOut.debug("Current interruption:" + vm.cpu.interrupt);
 
         // Pausa de 1 segundo;
         SystemOut.wait(1000);
@@ -81,17 +80,17 @@ public class Shell extends Thread {
             SystemOut.log("--------------------------");
             SystemOut.log("EXECUTAR COMANDOS");
 
-            SystemOut.log("1. Executar Programa C");
+            SystemOut.log("1. Executar Programa A");
             SystemOut.log("2. Executar Programa B");
-            SystemOut.log("3. Executar Programa A");
+            SystemOut.log("3. Executar Programa C");
             SystemOut.log("4. Executar Programa Trap In");
             SystemOut.log("5. Executar Programa Trap Out");
-            SystemOut.log("6. Executar todos os programas");
+            SystemOut.log("6. Executar todos os programas\n");
 
             SystemOut.log("7. Definir frame como nao disponivel");
             SystemOut.log("8. Exibir dump dos frames da memoria");
             SystemOut.log("9. Exibir dump da memoria (primeiras 100 posicoes)");
-            SystemOut.log("10. Limpar todas as posicoes de memoria");
+            SystemOut.log("10. Limpar todas as posicoes de memoria\n");
 
             SystemOut.log("0. Retornar ao menu anterior");
 
@@ -104,49 +103,50 @@ public class Shell extends Thread {
 
             switch (option) {
                 case 1:
-                    SystemOut.print("\nCarregando Programa C na memoria... ");
-                    vm.load(Program.PC);
-                    SystemOut.log("(done!)");
+                    SystemOut.print("\nCarregando Programa A na memoria... ");
+                    vm.load(Program.PA);
+                    SystemOut.log("(done)");
                     break;
 
                 case 2:
                     SystemOut.print("\nCarregando Programa B na memoria... ");
                     vm.load(Program.PB);
-                    SystemOut.log("(done!)");
+                    SystemOut.log("(done)");
                     break;
 
                 case 3:
-                    SystemOut.print("\nCarregando Programa A na memoria... ");
-                    vm.load(Program.PA);
-                    SystemOut.log("(done!)");
+                    SystemOut.print("\nCarregando Programa C na memoria... ");
+                    vm.load(Program.PC);
+                    SystemOut.log("(done)");
                     break;
 
                 case 4:
                     SystemOut.print("\nCarregando Programa Trap In na memoria... ");
                     vm.load(Program.TRAP_IN);
-                    SystemOut.log("(done!)");
+                    SystemOut.log("(done)");
                     break;
 
                 case 5:
                     SystemOut.print("\nCarregando Programa Trap Out na memoria... ");
                     vm.load(Program.TRAP_OUT);
-                    SystemOut.log("(done!)");
+                    SystemOut.log("(done)");
                     break;
 
                 case 6:
-                    SystemOut.print("\nCarregando na memoria os programas: A, B, C, TRAP_IN e TRAP_OUT... ");
+                    SystemOut.print("\nCarregando na memoria os programas: A, B, C... ");
                     vm.load(Program.PA);
                     vm.load(Program.PB);
                     vm.load(Program.PC);
-                    //vm.load(Program.TRAP_IN);
-                    //vm.load(Program.TRAP_OUT);
-                    SystemOut.log("(done!)");
+                    // vm.load(Program.TRAP_IN);
+                    // vm.load(Program.TRAP_OUT);
+                    SystemOut.log("(done)");
                     break;
 
                 case 7:
                     vm.mm.availableFrames[1] = false; // Simula um frame ocupado para evidenciar o split do
                                                       // programa em 2 frames não consecutivos
                     SystemOut.log("O segundo frame da memória foi definido como nao disponível");
+                    vm.dump(vm.mm.availableFrames); // Printa os frames livres/ocupados (false = ocupado)
                     break;
 
                 case 8:
