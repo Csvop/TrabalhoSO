@@ -8,27 +8,27 @@ public class CPU extends Thread {
     public int[] reg; // registradores da CPU
     public Word[] memory;
     public MemoryManager mm;
-    public ArrayList<Integer> paginas; //Paginas Alocadas
+    public ArrayList<Integer> paginas; // Paginas Alocadas
     public Interrupt interrupt;
-    public int timer; //conta instrucoes
+    public int timer; // conta instrucoes
     public Semaphore semCPU;
     public Semaphore semESC;
     public Routines routine;
     public int processId;
 
-
     public CPU(Word[] memory, Semaphore semCPU, Semaphore semESC) {
-        this.memory = memory; 
+        this.memory = memory;
         reg = new int[10];
         this.semCPU = semCPU;
         this.semESC = semESC;
+        this.interrupt = Interrupt.NONE;
     }
 
     void configure(Routines routine, MemoryManager mm) {
         this.routine = routine;
         this.mm = mm;
     }
-        
+
     /**
      * Converte de um endereço lógico em um endereço físico.
      */
@@ -53,12 +53,12 @@ public class CPU extends Thread {
 
         return res;
     }
-    
+
     public Context getContext() {
         return new Context(paginas, reg, pc, ir, processId);
     }
 
-    public void setContext(Context context) { 
+    public void setContext(Context context) {
         paginas = context.getAllocatedPages();
         pc = context.getPc();
         reg = context.getReg();
@@ -66,29 +66,30 @@ public class CPU extends Thread {
         processId = context.getProcessId();
     }
 
-    public void run() { // execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente setado
+    public void run() { // execucao da CPU supoe que o contexto da CPU, vide acima, esta devidamente
+                        // setado
 
         timer = 0;
 
-        while(true) {
+        while (true) {
             try {
                 semCPU.acquire();
-            } catch(InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
             while (interrupt == Interrupt.NONE) {
                 ir = memory[translate(pc)]; // busca posicao da memoria apontada por pc, guarda em ir
-                
+
                 int aux = 0;
-                 
+
                 timer++;
-                if(timer >= 5) {
+                if (timer >= 5) {
                     interrupt = Interrupt.TIMER;
                 }
-    
+
                 switch (ir.opc) { // para cada opcode, sua execução
-    
+
                     // Instruções JUMP
                     case JMP: // PC ← k
                         if (!(ir.p < -1 || ir.p > 1023)) {
@@ -97,11 +98,11 @@ public class CPU extends Thread {
                             interrupt = Interrupt.OVERFLOW;
                         }
                         break;
-    
+
                     case JMPI: // PC ← Rs
                         pc = reg[ir.r1];
                         break;
-    
+
                     case JMPIG: // If Rc > 0 Then PC ← Rs Else PC ← PC +1
                         if (reg[ir.r2] > 0) {
                             pc = reg[ir.r1];
@@ -109,7 +110,7 @@ public class CPU extends Thread {
                             pc++;
                         }
                         break;
-    
+
                     case JMPIL: // If Rc < 0 Then PC ← Rs Else PC ← PC +1
                         if (reg[ir.r2] < 0) {
                             pc = reg[ir.r1];
@@ -117,7 +118,7 @@ public class CPU extends Thread {
                             pc++;
                         }
                         break;
-    
+
                     case JMPIE: // If Rc = 0 Then PC ← Rs Else PC ← PC +1
                         if (reg[ir.r2] == 0) {
                             pc = reg[ir.r1];
@@ -125,11 +126,11 @@ public class CPU extends Thread {
                             pc++;
                         }
                         break;
-    
+
                     case JMPIM: // PC ← [A]
                         pc = memory[translate(ir.p)].p;
                         break;
-    
+
                     case JMPIGM: // If Rc > 0 Then PC ← [A] Else PC ← PC +1
                         if (reg[ir.r2] > 0) {
                             pc = memory[translate(ir.p)].p;
@@ -137,7 +138,7 @@ public class CPU extends Thread {
                             pc++;
                         }
                         break;
-    
+
                     case JMPILM: // If Rc < 0 Then PC ← [A] Else PC ← PC +1
                         if (reg[ir.r2] < 0) {
                             pc = memory[translate(ir.p)].p;
@@ -145,7 +146,7 @@ public class CPU extends Thread {
                             pc++;
                         }
                         break;
-    
+
                     case JMPIEM: // If Rc = 0 Then PC ← [A] Else PC ← PC +1
                         if (reg[ir.r2] == 0) {
                             pc = memory[translate(ir.p)].p;
@@ -153,7 +154,7 @@ public class CPU extends Thread {
                             pc++;
                         }
                         break;
-    
+
                     // Instruções Aritméticas
                     case ADDI: // Rd ← Rd + k
                         aux = reg[ir.r1] + ir.p;
@@ -164,7 +165,7 @@ public class CPU extends Thread {
                             pc++;
                         }
                         break;
-    
+
                     case SUBI: // Rd ← Rd – k
                         aux = reg[ir.r1] - ir.p;
                         if (aux == -2) {
@@ -174,7 +175,7 @@ public class CPU extends Thread {
                             pc++;
                         }
                         break;
-    
+
                     case ADD: // Rd ← Rd + Rs
                         aux = reg[ir.r1] + reg[ir.r2];
                         if (aux == -2) {
@@ -184,7 +185,7 @@ public class CPU extends Thread {
                             pc++;
                         }
                         break;
-    
+
                     case SUB: // Rd ← Rd - Rs
                         aux = reg[ir.r1] - reg[ir.r2];
                         if (aux == -2) {
@@ -194,7 +195,7 @@ public class CPU extends Thread {
                             pc++;
                         }
                         break;
-    
+
                     case MULT: // Rd ← Rd * Rs
                         aux = reg[ir.r1] * reg[ir.r2];
                         if (aux == -2) {
@@ -204,7 +205,7 @@ public class CPU extends Thread {
                             pc++;
                         }
                         break;
-    
+
                     // Instruções de Movimentação
                     case LDI: // Rd ← k
                         try {
@@ -214,7 +215,7 @@ public class CPU extends Thread {
                             interrupt = Interrupt.INVALID_ADDRESS;
                         }
                         break;
-    
+
                     case LDD: // Rd ← [A]
                         try {
                             reg[ir.r1] = memory[translate(ir.p)].p; // m == memoria
@@ -223,7 +224,7 @@ public class CPU extends Thread {
                             interrupt = Interrupt.INVALID_ADDRESS;
                         }
                         break;
-    
+
                     case STD: // [A] ← Rs
                         try {
                             memory[translate(ir.p)].opc = Opcode.DATA;
@@ -233,7 +234,7 @@ public class CPU extends Thread {
                             interrupt = Interrupt.INVALID_ADDRESS;
                         }
                         break;
-    
+
                     case LDX: // Rd ← [Rs]
                         try {
                             reg[ir.r1] = memory[translate(reg[ir.r2])].p; // m == memoria
@@ -242,7 +243,7 @@ public class CPU extends Thread {
                             interrupt = Interrupt.INVALID_ADDRESS;
                         }
                         break;
-    
+
                     case STX: // [Rd] ←Rs
                         try {
                             memory[translate(reg[ir.r1])].opc = Opcode.DATA;
@@ -252,23 +253,23 @@ public class CPU extends Thread {
                             interrupt = Interrupt.INVALID_ADDRESS;
                         }
                         break;
-    
+
                     case STOP: // por enquanto, para execucao
                         interrupt = Interrupt.STOP;
                         break;
-    
+
                     case TRAP: // trap
                         interrupt = Interrupt.TRAP;
                         pc++;
                         break;
-    
+
                     default:
                         interrupt = Interrupt.INVALID_INSTRUCTION;
                         break;
                 }
             }
 
-            if(interrupt != Interrupt.NONE) {
+            if (interrupt != Interrupt.NONE) {
                 switch (interrupt) {
                     case INVALID_ADDRESS:
                         routine.interruption();
@@ -286,8 +287,9 @@ public class CPU extends Thread {
                         routine.timer(getContext());
                         System.out.println(processId + " -> Timer");
                         try {
-                            //Thread.sleep(200);
-                        } catch (Exception e) {}
+                            // Thread.sleep(200);
+                        } catch (Exception e) {
+                        }
                         break;
                     case TRAP:
                         routine.trap(getContext());
@@ -296,5 +298,15 @@ public class CPU extends Thread {
                 }
             }
         }
+    }
+
+    public void printRegistradores() {
+        int index = 0;
+        SystemOut.print(Emoji.BEETLE);
+        for (int reg : this.reg) {
+            SystemOut.print(Dye.yellow("[R" + index + "=" + reg + "]"));
+            index++;
+        }
+        SystemOut.print("\n");
     }
 }
