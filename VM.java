@@ -25,7 +25,7 @@ public class VM {
 
     public VM(Semaphore semAllAPP) {
         // Hardware
-        tamMem = 64;
+        tamMem = 1024;
         mem = blankMemory(tamMem);
 
         readyQueue = new LinkedList<PCB>();
@@ -75,6 +75,7 @@ public class VM {
 
     public void dump(boolean[] frames) {
         SystemOut.debug(" > Memory.dump(frames) \n");
+        SystemOut.log("Frames da memória disponíveis:");
         for (int i = 0; i < frames.length; i++) {
             // if (frames[0] == false) Dye.green(frames[0]+""); else
             // Dye.green(frames[0]+"");

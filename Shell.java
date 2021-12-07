@@ -150,6 +150,8 @@ public class Shell extends Thread {
                     break;
 
                 case 8:
+                    SystemOut
+                            .log(Dye.cyan("(Memoria) frame count: " + vm.mm.frames + ", page size: " + vm.mm.pageSize));
                     vm.dump(vm.mm.availableFrames); // Printa os frames livres/ocupados (false = ocupado)
                     break;
 

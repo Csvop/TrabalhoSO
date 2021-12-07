@@ -52,9 +52,10 @@ public class MemoryManager {
                 }
             }
         } else {
-            SystemOut.warn("Não há espaço suficiente na memória para alocar o programa. ");
+            SystemOut.print("\n");
+            SystemOut.warn("Não ha espaco suficiente na memoria para alocar o programa. ");
             SystemOut.debug("Tamanho do programa: " + tamProg);
-            SystemOut.debug("Memória livre: " + availableMemoryPositionsCount());
+            SystemOut.debug("Memoria livre: " + availableMemoryPositionsCount());
         }
         return null;
     }
