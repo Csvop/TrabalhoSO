@@ -76,13 +76,19 @@ public class VM {
     public void dump(boolean[] frames) {
         SystemOut.debug(" > Memory.dump(frames) \n");
         for (int i = 0; i < frames.length; i++) {
-            SystemOut.print("[" + i + "] (" + frames[i] + ") --- ");
+            // if (frames[0] == false) Dye.green(frames[0]+""); else
+            // Dye.green(frames[0]+"");
+            SystemOut.print("[" + i + "] (" + ((frames[i]) ? Dye.blue("" + frames[i]) : Dye.red("" + frames[i]))
+                    + ") --- ");
             i++;
-            SystemOut.print("[" + i + "] (" + frames[i] + ") --- ");
+            SystemOut.print("[" + i + "] (" + ((frames[i]) ? Dye.blue("" + frames[i]) : Dye.red("" + frames[i]))
+                    + ") --- ");
             i++;
-            SystemOut.print("[" + i + "] (" + frames[i] + ") --- ");
+            SystemOut.print("[" + i + "] (" + ((frames[i]) ? Dye.blue("" + frames[i]) : Dye.red("" + frames[i]))
+                    + ") --- ");
             i++;
-            SystemOut.log("[" + i + "] (" + frames[i] + ")");
+            SystemOut.log(
+                    "[" + i + "] (" + ((frames[i]) ? Dye.blue("" + frames[i]) : Dye.red("" + frames[i])) + ")");
         }
         SystemOut.print("\n");
     }
