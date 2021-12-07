@@ -81,12 +81,12 @@ public class Shell extends Thread {
             SystemOut.log("--------------------------");
             SystemOut.log("EXECUTAR COMANDOS");
 
-            SystemOut.log("1. Carregar Programa C na memoria");
-            SystemOut.log("2. Carregar Programa B na memoria");
-            SystemOut.log("3. Carregar Programa A na memoria");
-            SystemOut.log("4. Carregar Programa Trap In na memoria");
-            SystemOut.log("5. Carregar Programa Trap Out na memoria");
-            SystemOut.log("6. Carregar todos os programas na memoria");
+            SystemOut.log("1. Executar Programa C");
+            SystemOut.log("2. Executar Programa B");
+            SystemOut.log("3. Executar Programa A");
+            SystemOut.log("4. Executar Programa Trap In");
+            SystemOut.log("5. Executar Programa Trap Out");
+            SystemOut.log("6. Executar todos os programas");
 
             SystemOut.log("7. Definir frame como nao disponivel");
             SystemOut.log("8. Exibir dump dos frames da memoria");
