@@ -18,6 +18,7 @@ public class MemoryManager {
 
     public ArrayList<Integer> allocate(Word[] program) {
         int tamProg = program.length;
+
         if (tamProg % pageSize == 0) {
             auxPage = ((tamProg / pageSize));
         } else {
@@ -68,5 +69,16 @@ public class MemoryManager {
         for (int i = 0; i < 100; i++) {
             System.out.println(memory[i].toString());
         }
+    }
+
+    public int availableMemoryPositionsCount() {
+        int count = 0;
+
+        for (boolean frame : availableFrames) {
+            if (frame == true)
+                count += pageSize;
+        }
+
+        return count;
     }
 }
