@@ -10,6 +10,7 @@ public class Shell extends Thread {
 
     public Shell() {
         this.active = true;
+        super.setName("Shell");
     }
 
     public void showOptionsMenuPrincipal(VM vm) {
