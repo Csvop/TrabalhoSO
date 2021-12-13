@@ -15,7 +15,7 @@
 
 # Máquina Virtual
 
-Nossa máquina virtual tem CPU, Memória, Gerente de Memória e Gerente de Processo.
+Nossa máquina virtual tem CPU, Memória, Gerente de Memória, Gerente de Processo, Escalonador e muito mais.
 
 **Enunciado do trabalho**: Em grupos de até 3 alunos. Construir uma máquina virtual conforme definido no enunciado do trabalho que está no Moodle com o enunciado da primeira parte do trabalho.
 
@@ -56,24 +56,9 @@ $ java App
 
 ###### Se acontecer erro na hora do clone/checkout, o comando `git config core.protectNTFS false` pode consertar.
 
-Para escolher qual programa executar, remova o comentário referente ao programa desejado.
+Para escolher qual programa executar, execute o comando conforme dito no menu através do terminal.
 É possível executar vários programas em paralelo.
 
-```java
-public class App {
-    public static void main(String[] args) {
-		VM vm = new VM();
-
-		//Cria processos na memória e coloca na fila de prontos
-		vm.load(Program.PC);
-		// vm.load(Program.PB);
-		// vm.load(Program.PA);
-		// vm.load(Program.TRAP_IN);
-		// vm.load(Program.TRAP_OUT);
-
-        ...
-    }
-}
 ```
 
 ## 🚀ㅤFeatures
@@ -85,14 +70,14 @@ public class App {
 - [x] Gerência de Memória
 - [x] Gerência de Processos
 - [x] Escalonamento
-- [ ] Concorrência
-- [ ] Semáforos
+- [x] Concorrência
+- [x] Semáforos
 
 ## Relatório
 
 ### Seção Programas
 
-Foram feitos todos os programas requeridos: PA, PB e PC. Também tem o TRAP_IN e TRAP_OUT.
+Foram feitos todos os programas requeridos: PA, PB e PC. Também tem o TRAP_IN e TRAP_OUT. O Console foi implementado mas não funciona como esperado.
 
 ## 🛠ㅤTecnologias
 
@@ -101,4 +86,3 @@ As seguintes ferramentas foram usadas na construção do projeto:
 - [Git](https://git-scm.com/)
 - [Java](https://www.java.com/)
 - [Gitpod](https://gitpod.io/)
-- [Gradle](https://gradle.org/install/)
