@@ -17,25 +17,28 @@ public class ProcessManager {
 
     public void createProcess(Word[] program) {
         mutex.acquireUninterruptibly();
-            ArrayList<Integer> allocatedPages = mm.allocate(program);
-            PCB pcb = new PCB(newProcessId, allocatedPages);
-            newProcessId++;
+        ArrayList<Integer> allocatedPages = mm.allocate(program);
+        PCB pcb = new PCB(newProcessId, allocatedPages);
+        newProcessId++;
 
-            if(readyQueue.isEmpty()) {
-                readyQueue.addLast(pcb);
-                semESC.release();
-            } else {
-                readyQueue.addLast(pcb);
-            }
+        if (readyQueue.isEmpty()) {
+            readyQueue.addLast(pcb);
+            semESC.release();
+        } else {
+            readyQueue.addLast(pcb);
+        }
         mutex.release();
     }
 
     public void endProcess(PCB processo) {
         mutex.acquireUninterruptibly();
-            try {Thread.sleep(1000);} catch (InterruptedException e) {}
-            mm.printMemory();
-            mm.unallocate(processo);
-            readyQueue.remove(processo);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+        }
+        mm.printMemorySegment(0, 100);
+        mm.unallocate(processo);
+        readyQueue.remove(processo);
         mutex.release();
     }
 }

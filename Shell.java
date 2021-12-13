@@ -15,7 +15,7 @@ public class Shell extends Thread {
 
     public void showOptionsMenuPrincipal(VM vm) {
         SystemOut.log("\n=========== MENU ===========");
-        SystemOut.print(Dye.cyan("(Virtual Machine) memory size: " + vm.tamMem));
+        SystemOut.print(Dye.cyan("(Virtual Machine) memory size: " + vm.memorySize));
 
         SystemOut.log("\n1. Espiar a CPU esta executando");
         SystemOut.log("2. Executar comandos");
@@ -147,22 +147,25 @@ public class Shell extends Thread {
                     vm.mm.availableFrames[1] = false; // Simula um frame ocupado para evidenciar o split do
                                                       // programa em 2 frames não consecutivos
                     SystemOut.log("O segundo frame da memória foi definido como nao disponível");
-                    vm.dump(vm.mm.availableFrames); // Printa os frames livres/ocupados (false = ocupado)
+                    vm.mm.dump(vm.mm.availableFrames); // Printa os frames livres/ocupados (false = ocupado)
                     break;
 
                 case 8:
-                    SystemOut
-                            .log(Dye.cyan("(Memoria) frame count: " + vm.mm.frames + ", page size: " + vm.mm.pageSize));
-                    vm.dump(vm.mm.availableFrames); // Printa os frames livres/ocupados (false = ocupado)
+                    SystemOut.log(
+                            Dye.cyan(
+                                    "(Memoria) frame count: " + vm.mm.availableFrames.length +
+                                            ", frame size: " + vm.mm.frameSize +
+                                            ", page size: " + vm.mm.pageSize));
+                    vm.mm.dump(vm.mm.availableFrames); // Printa os frames livres/ocupados (false = ocupado)
                     break;
 
                 case 9:
-                    vm.dump(0, 100);
+                    vm.mm.dump(0, 100);
                     break;
 
                 case 10:
                     SystemOut.print("\nLimpando todas as posicoes da memoria... ");
-                    vm.wipeMemory();
+                    vm.mm.wipeMemory();
                     SystemOut.log("(done!)");
                     break;
 
@@ -181,9 +184,8 @@ public class Shell extends Thread {
     }
 
     public void run() {
-        // Programas (nossos programas são static, não precisam ser instanciados aqui.)
         VM vm = new VM(semaphore);
-        // Menu
+
         while (active) {
             showMenuPrincipal(vm);
         }

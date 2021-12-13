@@ -1,12 +1,11 @@
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
 public class VM {
     // Hardwares
-    public int tamMem; // ok
-    public Word[] mem; // ok
+    public int memorySize; // ok
+    public Word[] memory; // ok
     public CPU cpu; // ok
 
     // Software - Gerenciadores
@@ -25,22 +24,22 @@ public class VM {
 
     public VM(Semaphore semAllAPP) {
         // Hardware
-        tamMem = 1024;
-        mem = blankMemory(tamMem);
+        memorySize = 1024;
+        memory = createMemory(memorySize);
 
         readyQueue = new LinkedList<PCB>();
         blockedQueue = new LinkedList<PCB>();
         orderQueue = new ConcurrentLinkedQueue<PCB>();
 
-        cpu = new CPU(this.mem, this.semCPU, this.semESC);
+        cpu = new CPU(this.memory, this.semCPU, this.semESC);
 
-        mm = new MemoryManager(this.mem);
+        mm = new MemoryManager(this.memory);
 
         pm = new ProcessManager(mm, readyQueue, semESC);
 
         scheduler = new Scheduler(readyQueue, semESC, semCPU, cpu);
 
-        console = new Console(cpu, mem, semAllAPP);
+        console = new Console(cpu, memory, semAllAPP);
 
         routine = new Routines(pm, scheduler, semESC, blockedQueue, console);
 
@@ -55,53 +54,17 @@ public class VM {
         pm.createProcess(program);
     }
 
-    public void dump(int ini, int fim) {
-        for (int i = ini; i < fim; i++) {
-            SystemOut.log(i + ": " + mem[i]);
-        }
-    }
-
-    public Word[] blankMemory(int tamMem) {
-        mem = new Word[tamMem];
-        for (int i = 0; i < tamMem; i++)
-            mem[i] = Word.copy(Word.BLANK);
-        return mem;
-    }
-
-    public void wipeMemory() {
-        this.mem = blankMemory(this.tamMem);
-        Arrays.fill(mm.availableFrames, true);
-    }
-
-    public void dump(boolean[] frames) {
-        SystemOut.debug(" > Memory.dump(frames) \n");
-        SystemOut.log("Frames da memória disponíveis:");
-        for (int i = 0; i < frames.length; i++) {
-            // if (frames[0] == false) Dye.green(frames[0]+""); else
-            // Dye.green(frames[0]+"");
-            SystemOut.print("[" + i + "] (" + ((frames[i]) ? Dye.blue("" + frames[i]) : Dye.red("" + frames[i]))
-                    + ") --- ");
-            i++;
-            SystemOut.print("[" + i + "] (" + ((frames[i]) ? Dye.blue("" + frames[i]) : Dye.red("" + frames[i]))
-                    + ") --- ");
-            i++;
-            SystemOut.print("[" + i + "] (" + ((frames[i]) ? Dye.blue("" + frames[i]) : Dye.red("" + frames[i]))
-                    + ") --- ");
-            i++;
-            SystemOut.log(
-                    "[" + i + "] (" + ((frames[i]) ? Dye.blue("" + frames[i]) : Dye.red("" + frames[i])) + ")");
-        }
-        SystemOut.print("\n");
+    public Word[] createMemory(int size) {
+        memory = new Word[size];
+        for (int i = 0; i < size; i++)
+            memory[i] = Word.copy(Word.BLANK);
+        return memory;
     }
 
     public void init() {
-        cpu.setName("CPU");
         cpu.start();
-
-        scheduler.setName("Scheduler");
         scheduler.start();
-
-        console.setName("Console");
         console.start();
     }
+
 }

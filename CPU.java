@@ -22,6 +22,7 @@ public class CPU extends Thread {
         this.semCPU = semCPU;
         this.semESC = semESC;
         this.interrupt = Interrupt.NONE;
+        super.setName("CPU");
     }
 
     void configure(Routines routine, MemoryManager mm) {

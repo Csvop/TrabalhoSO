@@ -14,6 +14,7 @@ public class Scheduler extends Thread {
         this.semEsc = semEsc;
         this.semCpu = semCpu;
         this.cpu = cpu;
+        super.setName("Escalonador");
     }
 
     @Override
@@ -21,7 +22,7 @@ public class Scheduler extends Thread {
         while (true) {
             try {
                 semEsc.acquire();
-                if(readyQueue.isEmpty()) {
+                if (readyQueue.isEmpty()) {
                     continue;
                 }
                 PCB pcb = readyQueue.removeFirst();
